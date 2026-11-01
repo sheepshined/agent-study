@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="870" height="470" viewBox="0 0 870 470" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="870" height="470" fill="#fafbfc"/>
+  <text x="435" y="34" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">短期记忆与 checkpointer：按 thread_id 的不可变快照流</text>
+
+  <!-- memory mechanism -->
+  <rect x="40" y="64" width="380" height="180" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="230" y="92" text-anchor="middle" font-size="15" font-weight="bold" fill="#2b5985">记忆的机制本质（场景 1/2 实测）</text>
+  <text x="230" y="120" text-anchor="middle" font-size="13" fill="#24292f">模型无状态，状态全在 messages 里</text>
+  <text x="230" y="146" text-anchor="middle" font-size="12.5" fill="#24292f">t1 轮2 能答"你是小明"</text>
+  <text x="230" y="168" text-anchor="middle" font-size="12.5" fill="#2c7a3f">← 因为 t1 的历史被取回来了</text>
+  <text x="230" y="194" text-anchor="middle" font-size="12.5" fill="#a40e26">t2 问同样的话 → "不记得"</text>
+  <text x="230" y="220" text-anchor="middle" font-size="12" fill="#6a737d">thread_id 是会话边界（隔离即隐私）</text>
+
+  <!-- reducer -->
+  <rect x="450" y="64" width="380" height="180" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="640" y="92" text-anchor="middle" font-size="15" font-weight="bold" fill="#2c7a3f">add_messages reducer（AgentState，types.py:349）</text>
+  <rect x="475" y="110" width="150" height="42" rx="6" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="550" y="130" text-anchor="middle" font-size="12.5" fill="#24292f">新 id 消息</text>
+  <text x="550" y="147" text-anchor="middle" font-size="11" fill="#6a737d">追加</text>
+  <rect x="655" y="110" width="150" height="42" rx="6" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="730" y="130" text-anchor="middle" font-size="12.5" fill="#24292f">同 id 消息</text>
+  <text x="730" y="147" text-anchor="middle" font-size="11" fill="#6a737d">覆盖（修正）</text>
+  <text x="640" y="182" text-anchor="middle" font-size="12.5" fill="#24292f">历史只增不改：修正也是显式更新</text>
+  <text x="640" y="212" text-anchor="middle" font-size="12" fill="#6a737d">s04 的"节点只提交补丁"在这里兑现</text>
+
+  <!-- checkpoint flow -->
+  <rect x="40" y="264" width="790" height="176" rx="10" fill="#fff8e6" stroke="#bd8a00" stroke-width="2"/>
+  <text x="435" y="292" text-anchor="middle" font-size="15" font-weight="bold" fill="#8a6500">检查点流：invoke 前取档，invoke 后存档（存取全部深拷贝，快照不可变）</text>
+  <text x="120" y="330" font-size="13" fill="#24292f">t1: v1(2条) → v2(4条)</text>
+  <text x="120" y="358" font-size="13" fill="#24292f">t2: v3(2条)（与 t1 完全隔离）</text>
+  <path d="M 300 340 C 380 300 380 380 460 340" fill="none" stroke="#8250df" stroke-width="2" stroke-dasharray="6 3" marker-end="url(#arr)"/>
+  <text x="490" y="330" text-anchor="middle" font-size="13" fill="#8250df">time travel：回到 v1 继续跑 → v4（fork 分支）</text>
+  <text x="490" y="356" text-anchor="middle" font-size="12.5" fill="#24292f">任一历史时刻都可续跑 / 审计 / 评测重放</text>
+  <text x="120" y="396" font-size="12" fill="#6a737d">对应真实 API：create_agent(checkpointer=...) factory.py:891 → graph.compile(checkpointer=...) :1926</text>
+  <text x="435" y="424" text-anchor="middle" font-size="12" fill="#b35900">长对话塞不下？官方答案走中间件：SummarizationMiddleware（summarization.py:232，before_model :398）超预算先摘要</text>
+</svg>

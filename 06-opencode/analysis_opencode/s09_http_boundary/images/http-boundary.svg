@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="870" height="460" viewBox="0 0 870 460" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="870" height="460" fill="#fafbfc"/>
+  <text x="435" y="32" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">HTTP-first：同一份 app.fetch，两种传输（进程内直调 ∥ 真网络）</text>
+
+  <!-- kernel -->
+  <rect x="240" y="120" width="390" height="180" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="435" y="148" text-anchor="middle" font-size="15" font-weight="bold" fill="#2b5985">内核：app.fetch(request) —— 唯一请求处理器</text>
+  <rect x="262" y="164" width="160" height="34" rx="5" fill="#ffffff" stroke="#8fb3d9"/>
+  <text x="342" y="186" text-anchor="middle" font-size="11.5" fill="#24292f">POST /turn → 跑一轮</text>
+  <rect x="446" y="164" width="160" height="34" rx="5" fill="#ffffff" stroke="#8fb3d9"/>
+  <text x="526" y="186" text-anchor="middle" font-size="11.5" fill="#24292f">GET /events → SSE 流</text>
+  <rect x="262" y="206" width="160" height="34" rx="5" fill="#ffffff" stroke="#8fb3d9"/>
+  <text x="342" y="228" text-anchor="middle" font-size="11.5" fill="#24292f">GET /session → 投影</text>
+  <rect x="446" y="206" width="160" height="34" rx="5" fill="#fdf3f3" stroke="#c98a8a"/>
+  <text x="526" y="228" text-anchor="middle" font-size="11.5" fill="#8a3030">404 / 400 也走协议</text>
+  <text x="435" y="278" text-anchor="middle" font-size="10.5" fill="#6a737d">worker.ts:56 的 app.fetch(request) —— Effect HttpApi 应用可被直接调用</text>
+
+  <!-- in-process path -->
+  <rect x="40" y="60" width="160" height="52" rx="8" fill="#f0f7ee" stroke="#3d9a50" stroke-width="2"/>
+  <text x="120" y="82" text-anchor="middle" font-size="12" font-weight="bold" fill="#2c7a3f">TUI（默认路径）</text>
+  <text x="120" y="100" text-anchor="middle" font-size="10" fill="#6a737d">Bun Worker 线程内</text>
+  <path d="M 200 88 H 238" stroke="#3d9a50" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="219" y="78" text-anchor="middle" font-size="10" fill="#2c7a3f">直调</text>
+  <text x="120" y="128" text-anchor="middle" font-size="10.5" fill="#2c7a3f">零 TCP · 零端口 · 事件走 GlobalBus</text>
+
+  <!-- network path -->
+  <rect x="670" y="60" width="160" height="52" rx="8" fill="#fdf3e7" stroke="#d9a03c" stroke-width="2"/>
+  <text x="750" y="82" text-anchor="middle" font-size="12" font-weight="bold" fill="#8a5a00">serve / Web / IDE</text>
+  <text x="750" y="100" text-anchor="middle" font-size="10" fill="#6a737d">--port 才真起 HTTP</text>
+  <path d="M 670 88 H 632" stroke="#d9a03c" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="651" y="78" text-anchor="middle" font-size="10" fill="#8a5a00">listen</text>
+  <text x="750" y="128" text-anchor="middle" font-size="10.5" fill="#8a5a00">4096 被占则随机（server.ts:120-121）</text>
+
+  <!-- clients strip -->
+  <rect x="40" y="322" width="790" height="56" rx="8" fill="#f6f8fa" stroke="#c9d4de"/>
+  <text x="435" y="344" text-anchor="middle" font-size="12" font-weight="bold" fill="#24292f">多前端共享同一协议面：TUI · Web(app/ui/session-ui) · Electron · VS Code · ACP · GitHub Action</text>
+  <text x="435" y="366" text-anchor="middle" font-size="11" fill="#6a737d">SDK 由 OpenAPI 生成（script/generate.ts）；改协议必须重生成，不许手改客户端</text>
+
+  <!-- spec note -->
+  <rect x="40" y="392" width="790" height="52" rx="8" fill="#fdf3f3" stroke="#c98a8a"/>
+  <text x="435" y="413" text-anchor="middle" font-size="12" font-weight="bold" fill="#8a3030">边界写进规范：specs/tui-package.md —— TUI 不得依赖 packages/opencode，缺能力就加 API + 重生成 SDK</text>
+  <text x="435" y="433" text-anchor="middle" font-size="11" fill="#8a3030">三种部署形态：单进程双线程（默认）· headless serve · attach 远端</text>
+</svg>

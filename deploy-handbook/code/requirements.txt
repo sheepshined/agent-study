@@ -1,0 +1,4 @@
+# 本服务为纯标准库实现，无第三方依赖；保留此文件是为了示范"依赖层缓存"的正确顺序：
+# Dockerfile 先 COPY requirements.txt 再 COPY 代码——依赖不变时改代码不重装依赖（§2.1）。
+# 真实服务的第一步是把依赖钉死在精确版本（pip freeze > requirements.txt 或 uv lock），
+# 供应链面（哈希校验/扫描）见 security-handbook §3.5 与本文 §2.4。

@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="870" height="450" viewBox="0 0 870 450" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="870" height="450" fill="#fafbfc"/>
+  <text x="435" y="32" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">工具可见集：三层合并 → 按模型裁剪 → 权限削视野 → 截断外包</text>
+
+  <!-- three layers -->
+  <rect x="40" y="62" width="250" height="170" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="165" y="88" text-anchor="middle" font-size="15" font-weight="bold" fill="#2b5985">① 三层合并（registry.ts）</text>
+  <rect x="60" y="102" width="210" height="34" rx="5" fill="#ffffff" stroke="#8fb3d9"/>
+  <text x="165" y="124" text-anchor="middle" font-size="12" fill="#24292f">内置 17 个（:231-249）</text>
+  <rect x="60" y="142" width="210" height="34" rx="5" fill="#ffffff" stroke="#8fb3d9"/>
+  <text x="165" y="164" text-anchor="middle" font-size="12" fill="#24292f">磁盘 {tool,tools}/*.ts(:184-197)</text>
+  <rect x="60" y="182" width="210" height="34" rx="5" fill="#ffffff" stroke="#8fb3d9"/>
+  <text x="165" y="204" text-anchor="middle" font-size="12" fill="#24292f">插件 p.tool（:199-204）</text>
+  <text x="165" y="230" text-anchor="middle" font-size="10.5" fill="#6a737d">同名后者遮蔽前者</text>
+
+  <!-- model trim -->
+  <rect x="320" y="62" width="250" height="170" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="445" y="88" text-anchor="middle" font-size="15" font-weight="bold" fill="#2c7a3f">② 按模型/客户端裁剪</text>
+  <rect x="340" y="102" width="210" height="34" rx="5" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="445" y="118" text-anchor="middle" font-size="11.5" fill="#24292f">websearch 仅 opencode provider</text>
+  <text x="445" y="132" text-anchor="middle" font-size="10" fill="#6a737d">(:293-295)</text>
+  <rect x="340" y="142" width="210" height="34" rx="5" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="445" y="158" text-anchor="middle" font-size="11.5" fill="#24292f">gpt-* 换 apply_patch（s05）</text>
+  <text x="445" y="172" text-anchor="middle" font-size="10" fill="#6a737d">(:297-300 三行互斥开关)</text>
+  <rect x="340" y="182" width="210" height="34" rx="5" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="445" y="198" text-anchor="middle" font-size="11.5" fill="#24292f">question 仅 app/cli/desktop</text>
+  <text x="445" y="212" text-anchor="middle" font-size="10" fill="#6a737d">(:207)</text>
+  <text x="445" y="230" text-anchor="middle" font-size="10.5" fill="#6a737d">被裁掉的工具对模型"不存在"</text>
+
+  <!-- permission prune -->
+  <rect x="600" y="62" width="230" height="170" rx="10" fill="#fdf3e7" stroke="#d9a03c" stroke-width="2"/>
+  <text x="715" y="88" text-anchor="middle" font-size="15" font-weight="bold" fill="#8a5a00">③ 权限削视野</text>
+  <rect x="620" y="102" width="190" height="60" rx="5" fill="#ffffff" stroke="#e3c088"/>
+  <text x="715" y="126" text-anchor="middle" font-size="11.5" fill="#24292f">{permission:"deploy",</text>
+  <text x="715" y="144" text-anchor="middle" font-size="11.5" fill="#24292f">pattern:"*", action:"deny"}</text>
+  <text x="715" y="186" text-anchor="middle" font-size="11.5" fill="#24292f">→ deploy 从可见集消失</text>
+  <text x="715" y="206" text-anchor="middle" font-size="10.5" fill="#6a737d">permission/index.ts:204-219</text>
+  <text x="715" y="222" text-anchor="middle" font-size="10.5" fill="#b35900">权限面与工具面联动</text>
+
+  <path d="M 290 147 H 318" stroke="#5a6b7b" stroke-width="1.8" marker-end="url(#arr)"/>
+  <path d="M 570 147 H 598" stroke="#5a6b7b" stroke-width="1.8" marker-end="url(#arr)"/>
+
+  <!-- truncation -->
+  <path d="M 715 232 V 268" stroke="#5a6b7b" stroke-width="1.8" marker-end="url(#arr)"/>
+  <rect x="40" y="270" width="790" height="120" rx="10" fill="#f6f8fa" stroke="#c9d4de" stroke-width="2"/>
+  <text x="435" y="296" text-anchor="middle" font-size="15" font-weight="bold" fill="#24292f">④ 输出截断与上下文外包（tool/truncate.ts）</text>
+  <rect x="70" y="312" width="220" height="60" rx="6" fill="#ffffff" stroke="#c9d4de"/>
+  <text x="180" y="336" text-anchor="middle" font-size="11.5" fill="#24292f">工具输出 > 2000 行 / 50 KB</text>
+  <text x="180" y="356" text-anchor="middle" font-size="10.5" fill="#6a737d">行数与字节数都不超才放行</text>
+  <path d="M 292 342 H 320" stroke="#5a6b7b" stroke-width="1.6" marker-end="url(#arr)"/>
+  <rect x="322" y="312" width="220" height="60" rx="6" fill="#ffffff" stroke="#c9d4de"/>
+  <text x="432" y="336" text-anchor="middle" font-size="11.5" fill="#24292f">全文落 truncation 目录</text>
+  <text x="432" y="356" text-anchor="middle" font-size="10.5" fill="#6a737d">窗口里只进 20 行预览</text>
+  <path d="M 544 342 H 572" stroke="#5a6b7b" stroke-width="1.6" marker-end="url(#arr)"/>
+  <rect x="574" y="312" width="230" height="60" rx="6" fill="#fdf3f3" stroke="#c98a8a"/>
+  <text x="689" y="332" text-anchor="middle" font-size="11.5" fill="#8a3030">附委派提示（:129-133）：</text>
+  <text x="689" y="350" text-anchor="middle" font-size="11.5" fill="#8a3030">"交给 explore agent 读，</text>
+  <text x="689" y="366" text-anchor="middle" font-size="11.5" fill="#8a3030">别自己读"</text>
+
+  <text x="435" y="424" text-anchor="middle" font-size="12" fill="#6a737d">最终进请求的 schema = 三层合并 ∩ 模型裁剪 ∩ 权限视野；截断是主动的上下文工程</text>
+</svg>

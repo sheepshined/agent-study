@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>面试备战站 · AI 应用岗 128 题</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header>
+    <h1>面试备战站</h1>
+    <p class="sub">数据源：interview-handbook 七个题集 · 128 题（自建应用，非手册）</p>
+    <nav>
+      <button class="tab active" data-view="dashboard">进度仪表盘</button>
+      <button class="tab" data-view="library">题库检索</button>
+      <button class="tab" data-view="test">卡片自测</button>
+      <button class="tab" data-view="wrongbook">错题本</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- 视图一：进度仪表盘 -->
+    <section id="view-dashboard" class="view">
+      <div id="dash-summary" class="cards-row"></div>
+      <div id="dash-distribution" class="panel"></div>
+      <div id="dash-topics" class="panel"></div>
+    </section>
+
+    <!-- 视图二：题库检索 -->
+    <section id="view-library" class="view" hidden>
+      <div class="panel filter-bar">
+        <label>主题 <select id="f-topic"><option value="">全部</option></select></label>
+        <label>难度 <select id="f-difficulty">
+          <option value="">全部</option><option>初</option><option>中</option><option>高</option>
+        </select></label>
+        <label>频次 <select id="f-frequency">
+          <option value="">全部</option><option>高</option><option>中</option><option>低</option>
+        </select></label>
+        <label>状态 <select id="f-status">
+          <option value="">全部</option>
+          <option value="untested">未测</option>
+          <option value="know">会</option>
+          <option value="half">半会</option>
+          <option value="no">不会</option>
+          <option value="wrongbook">错题本</option>
+        </select></label>
+        <label class="grow">关键词 <input id="f-keyword" type="search" placeholder="搜题干，如 token / RAG / 缓存"></label>
+        <button id="f-search">检索</button>
+      </div>
+      <div id="lib-count" class="muted"></div>
+      <table id="lib-table">
+        <thead><tr><th>题号</th><th>题目</th><th>主题</th><th>难度</th><th>频次</th><th>自评</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div class="pager">
+        <button id="lib-prev">上一页</button>
+        <span id="lib-page"></span>
+        <button id="lib-next">下一页</button>
+      </div>
+    </section>
+
+    <!-- 视图三：卡片自测 -->
+    <section id="view-test" class="view" hidden>
+      <div id="test-setup" class="panel">
+        <h2>自测范围</h2>
+        <div class="filter-bar">
+          <label>主题 <select id="t-topic"><option value="">全部</option></select></label>
+          <label>难度 <select id="t-difficulty">
+            <option value="">全部</option><option>初</option><option>中</option><option>高</option>
+          </select></label>
+          <label>频次 <select id="t-frequency">
+            <option value="">全部</option><option>高</option><option>中</option><option>低</option>
+          </select></label>
+          <label>范围 <select id="t-scope">
+            <option value="">全部题</option>
+            <option value="untested">只测未测</option>
+            <option value="wrongbook">错题本重测</option>
+            <option value="high">只测高频题</option>
+          </select></label>
+          <label><input type="checkbox" id="t-shuffle" checked> 乱序</label>
+        </div>
+        <button id="t-start" class="primary">开始自测</button>
+      </div>
+      <div id="test-card" hidden>
+        <div class="muted" id="test-progress"></div>
+        <div class="card">
+          <div id="card-front">
+            <div class="card-meta" id="card-meta"></div>
+            <h2 id="card-title"></h2>
+            <button id="card-reveal" class="primary">翻看参考回答</button>
+          </div>
+          <div id="card-back" hidden>
+            <div class="card-meta" id="card-meta-back"></div>
+            <h2 id="card-title-back" class="small-title"></h2>
+            <div id="card-answer" class="md"></div>
+            <div class="rate-row">
+              <span>这道题我：</span>
+              <button class="rate know" data-rating="know">会</button>
+              <button class="rate half" data-rating="half">半会</button>
+              <button class="rate no" data-rating="no">不会</button>
+              <button id="card-detail-link" class="ghost">查看完整四件套</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="test-done" hidden>
+        <div class="panel">
+          <h2>本轮自测完成</h2>
+          <p id="test-done-summary"></p>
+          <button id="test-again" class="primary">再来一轮</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 视图四：错题本 -->
+    <section id="view-wrongbook" class="view" hidden>
+      <div id="wb-count" class="muted"></div>
+      <table id="wb-table">
+        <thead><tr><th>题号</th><th>题目</th><th>主题</th><th>最新自评</th><th>操作</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+
+  <!-- 题目详情弹层（四件套全文） -->
+  <div id="modal-mask" hidden>
+    <div id="modal">
+      <div class="modal-head">
+        <h2 id="modal-title"></h2>
+        <button id="modal-close">关闭 ✕</button>
+      </div>
+      <div class="card-meta" id="modal-meta"></div>
+      <div id="modal-body" class="md"></div>
+      <div class="rate-row">
+        <span>自评：</span>
+        <button class="rate know" data-rating="know">会</button>
+        <button class="rate half" data-rating="half">半会</button>
+        <button class="rate no" data-rating="no">不会</button>
+        <span id="modal-rating-hint" class="muted"></span>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" hidden></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>

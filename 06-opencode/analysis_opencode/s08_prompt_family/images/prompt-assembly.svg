@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="870" height="450" viewBox="0 0 870 450" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="870" height="450" fill="#fafbfc"/>
+  <text x="435" y="32" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">系统提示词拼装线：family + environment + instructions + mcp + skills</text>
+
+  <!-- assembly line -->
+  <rect x="40" y="60" width="500" height="360" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="290" y="86" text-anchor="middle" font-size="15" font-weight="bold" fill="#2b5985">system[]（prompt.ts:1264-1269，顺序即字节序）</text>
+
+  <rect x="62" y="100" width="456" height="40" rx="6" fill="#ffffff" stroke="#8fb3d9"/>
+  <text x="290" y="118" text-anchor="middle" font-size="12" font-weight="bold" fill="#24292f">① family：按模型前缀路由的家族模板（s05）</text>
+  <text x="290" y="133" text-anchor="middle" font-size="10" fill="#6a737d">system.ts:43-66</text>
+
+  <rect x="62" y="146" width="456" height="52" rx="6" fill="#ffffff" stroke="#8fb3d9"/>
+  <text x="290" y="166" text-anchor="middle" font-size="12" font-weight="bold" fill="#24292f">② environment：模型身份 + &lt;env&gt; 块（:74-104）</text>
+  <text x="290" y="184" text-anchor="middle" font-size="10.5" fill="#b35900">日期按天冻结（toDateString）→ 同一天字节全等，前缀缓存才吃得满</text>
+
+  <rect x="62" y="204" width="456" height="52" rx="6" fill="#fdf3e7" stroke="#d9a03c"/>
+  <text x="290" y="224" text-anchor="middle" font-size="12" font-weight="bold" fill="#8a5a00">③ instructions：AGENTS.md 类项目指令</text>
+  <text x="290" y="242" text-anchor="middle" font-size="10.5" fill="#24292f">候选 [AGENTS.md, CLAUDE.md, CONTEXT.md(deprecated)]，首个命中即停</text>
+
+  <rect x="62" y="262" width="456" height="36" rx="6" fill="#ffffff" stroke="#8fb3d9"/>
+  <text x="290" y="284" text-anchor="middle" font-size="12" fill="#24292f">④ mcp_instructions：MCP 工具使用说明</text>
+
+  <rect x="62" y="304" width="456" height="46" rx="6" fill="#ffffff" stroke="#8fb3d9"/>
+  <text x="290" y="324" text-anchor="middle" font-size="12" fill="#24292f">⑤ skills：verbose 清单（工具描述里另有简版，:107-119）</text>
+  <text x="290" y="342" text-anchor="middle" font-size="10" fill="#6a737d">省 token 又要可发现——两处内容刻意不同</text>
+
+  <rect x="62" y="356" width="456" height="48" rx="6" fill="#f6f8fa" stroke="#c9d4de" stroke-dasharray="4 3"/>
+  <text x="290" y="376" text-anchor="middle" font-size="11" fill="#6a737d">越靠前的段越要求字节稳定：缓存命中 = 家族模板 + 环境段按天冻结</text>
+  <text x="290" y="394" text-anchor="middle" font-size="11" fill="#6a737d">会话相关、逐请求变化的内容一律压到后段</text>
+
+  <!-- discovery panel -->
+  <rect x="570" y="60" width="260" height="240" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="700" y="86" text-anchor="middle" font-size="14" font-weight="bold" fill="#2c7a3f">指令发现与就近附带</text>
+  <rect x="588" y="100" width="224" height="88" rx="6" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="700" y="122" text-anchor="middle" font-size="11.5" fill="#24292f">findUp：当前目录 → worktree</text>
+  <text x="700" y="142" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#8a3030">首个命中即 break</text>
+  <text x="700" y="162" text-anchor="middle" font-size="10.5" fill="#6a737d">不逐层堆叠（instruction.ts:118/:130）</text>
+  <rect x="588" y="196" width="224" height="88" rx="6" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="700" y="218" text-anchor="middle" font-size="11.5" fill="#24292f">读文件时向上找同目录 AGENTS.md</text>
+  <text x="700" y="238" text-anchor="middle" font-size="11.5" fill="#24292f">claims Map 按 messageID 去重</text>
+  <text x="700" y="258" text-anchor="middle" font-size="10.5" fill="#6a737d">一轮一清（resolve 结束 clear）</text>
+
+  <!-- token estimate note -->
+  <rect x="570" y="314" width="260" height="106" rx="10" fill="#fdf3f3" stroke="#c98a8a" stroke-width="2"/>
+  <text x="700" y="340" text-anchor="middle" font-size="13" font-weight="bold" fill="#8a3030">token 估算 = 字符数 / 4</text>
+  <text x="700" y="362" text-anchor="middle" font-size="11" fill="#24292f">core/src/util/token.ts:4（CHARS_PER_TOKEN=4）</text>
+  <text x="700" y="382" text-anchor="middle" font-size="10.5" fill="#6a737d">只服务于 prune/select 的预算判断；</text>
+  <text x="700" y="400" text-anchor="middle" font-size="10.5" fill="#6a737d">真实成本以 provider 回报的 usage 为准</text>
+</svg>

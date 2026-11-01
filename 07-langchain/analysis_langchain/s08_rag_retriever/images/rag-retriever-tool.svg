@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="870" height="470" viewBox="0 0 870 470" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="870" height="470" fill="#fafbfc"/>
+  <text x="435" y="34" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">RAG 工具化：入库一次，检索随问，引文随行</text>
+
+  <!-- ingestion row -->
+  <rect x="40" y="60" width="790" height="96" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="66" y="88" font-size="15" font-weight="bold" fill="#2b5985">入库（一次性）</text>
+  <rect x="70" y="102" width="180" height="40" rx="6" fill="#ffffff" stroke="#8fb3d9"/>
+  <text x="160" y="127" text-anchor="middle" font-size="12.5" fill="#24292f">文档 Document（:288）</text>
+  <rect x="320" y="102" width="200" height="40" rx="6" fill="#ffffff" stroke="#8fb3d9"/>
+  <text x="420" y="120" text-anchor="middle" font-size="12.5" fill="#24292f">递归切分保语义</text>
+  <text x="420" y="137" text-anchor="middle" font-size="11" fill="#6a737d">段落→句号→硬切（character.py:91）</text>
+  <rect x="590" y="102" width="210" height="40" rx="6" fill="#ffffff" stroke="#8fb3d9"/>
+  <text x="695" y="120" text-anchor="middle" font-size="12.5" fill="#24292f">向量库 add_texts（:46）</text>
+  <text x="695" y="137" text-anchor="middle" font-size="11" fill="#6a737d">chunk + metadata（来源引文）</text>
+  <line x1="250" y1="122" x2="315" y2="122" stroke="#5a6b7b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="520" y1="122" x2="585" y2="122" stroke="#5a6b7b" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- retrieval loop -->
+  <rect x="40" y="180" width="790" height="150" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="66" y="208" font-size="15" font-weight="bold" fill="#2c7a3f">检索（每问一次）——检索器包装成工具，agent 自主决定查不查、查什么</text>
+  <rect x="80" y="228" width="160" height="44" rx="6" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="160" y="247" text-anchor="middle" font-size="12.5" fill="#24292f">模型自拟查询词</text>
+  <text x="160" y="264" text-anchor="middle" font-size="11" fill="#6a737d">query: string（retriever.py:31）</text>
+  <rect x="330" y="228" width="190" height="44" rx="6" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="425" y="247" text-anchor="middle" font-size="12.5" fill="#24292f">similarity_search（:361）</text>
+  <text x="425" y="264" text-anchor="middle" font-size="11" fill="#6a737d">top-k + 相关性阈值</text>
+  <rect x="610" y="228" width="190" height="44" rx="6" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="705" y="247" text-anchor="middle" font-size="12.5" fill="#24292f">观察文本（带 [来源·片段]）</text>
+  <text x="705" y="264" text-anchor="middle" font-size="11" fill="#6a737d">回填历史 → 模型综合作答</text>
+  <line x1="240" y1="250" x2="325" y2="250" stroke="#5a6b7b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="520" y1="250" x2="605" y2="250" stroke="#5a6b7b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <path d="M 705 272 C 705 305 160 305 160 277" fill="none" stroke="#8250df" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arr)"/>
+  <text x="435" y="320" text-anchor="middle" font-size="12" fill="#8250df">检索器也是 Runnable（retrievers.py:55）——既能直接 | 进链，也能这样工具化进 agent</text>
+
+  <!-- boundary -->
+  <rect x="40" y="354" width="790" height="86" rx="10" fill="#f6f8fa" stroke="#c9d4de" stroke-dasharray="4 3"/>
+  <text x="435" y="382" text-anchor="middle" font-size="14" font-weight="bold" fill="#24292f">边界纪律（场景 4 实测）</text>
+  <text x="435" y="408" text-anchor="middle" font-size="12.5" fill="#b35900">最高余弦分低于阈值 → 工具返回"（资料库中没有找到相关内容）"→ 模型如实回答"无法回答"</text>
+  <text x="435" y="430" text-anchor="middle" font-size="12" fill="#6a737d">检索带阈值 = 不幻觉的机制保证；结果带引文 = 可验证的前提。mini 向量 = 字符 bigram（真实为 Embedding 模型）</text>
+</svg>

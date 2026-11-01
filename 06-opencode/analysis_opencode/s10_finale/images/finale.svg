@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="870" height="450" viewBox="0 0 870 450" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="870" height="450" fill="#fafbfc"/>
+  <text x="435" y="32" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">收官：独立 git-dir 的内容寻址快照 + 多前端装配（内核只出现一次）</text>
+
+  <!-- snapshot flow -->
+  <rect x="40" y="62" width="250" height="150" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="165" y="88" text-anchor="middle" font-size="14" font-weight="bold" fill="#2b5985">项目文件树（可以是非 git 目录）</text>
+  <text x="165" y="118" text-anchor="middle" font-size="12" fill="#24292f">a.ts = "export const v = 1"</text>
+  <text x="165" y="146" text-anchor="middle" font-size="12" fill="#24292f">agent 覆盖 → v = 2</text>
+  <text x="165" y="174" text-anchor="middle" font-size="11" fill="#6a737d">项目的 .git 全程不被触碰</text>
+  <text x="165" y="196" text-anchor="middle" font-size="10.5" fill="#6a737d">undo 的锚点是消息（revert.ts:40-）</text>
+
+  <rect x="330" y="92" width="200" height="90" rx="10" fill="#f6f8fa" stroke="#c9d4de" stroke-width="2"/>
+  <text x="430" y="118" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#24292f">git --git-dir … --work-tree …</text>
+  <text x="430" y="140" text-anchor="middle" font-size="11" fill="#24292f">snapshot/index.ts:71-75</text>
+  <text x="430" y="160" text-anchor="middle" font-size="11" fill="#8a3030">gitdir = data/snapshot/&lt;projectID&gt;/&lt;hash&gt;</text>
+
+  <rect x="570" y="62" width="260" height="150" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="700" y="88" text-anchor="middle" font-size="14" font-weight="bold" fill="#2c7a3f">内容寻址快照仓</text>
+  <text x="700" y="116" text-anchor="middle" font-size="11.5" fill="#24292f">sha1("v1") → "v1"</text>
+  <text x="700" y="138" text-anchor="middle" font-size="11.5" fill="#24292f">sha1("v2") → "v2"（同内容只存一份）</text>
+  <text x="700" y="166" text-anchor="middle" font-size="11" fill="#6a737d">revert 记录 {messageID, partID, snapshot, diff}</text>
+  <text x="700" y="188" text-anchor="middle" font-size="11" fill="#6a737d">恢复 = 取回"这条消息之前"的树</text>
+
+  <path d="M 290 137 H 328" stroke="#5a6b7b" stroke-width="1.8" marker-end="url(#arr)"/>
+  <path d="M 530 137 H 568" stroke="#5a6b7b" stroke-width="1.8" marker-end="url(#arr)"/>
+  <path d="M 700 214 V 246" stroke="#3d9a50" stroke-width="1.8" marker-end="url(#arr)"/>
+  <text x="742" y="236" text-anchor="middle" font-size="11" fill="#2c7a3f">undo</text>
+
+  <!-- assembly -->
+  <rect x="40" y="248" width="790" height="120" rx="10" fill="#fdf3e7" stroke="#d9a03c" stroke-width="2"/>
+  <text x="435" y="274" text-anchor="middle" font-size="15" font-weight="bold" fill="#8a5a00">多前端装配表：内核只出现一次，差异全在壳里</text>
+  <rect x="70" y="290" width="230" height="60" rx="6" fill="#ffffff" stroke="#e3c088"/>
+  <text x="185" y="312" text-anchor="middle" font-size="11.5" fill="#24292f">stdout 壳（CI/headless）</text>
+  <text x="185" y="332" text-anchor="middle" font-size="10" fill="#6a737d">进程内 app.fetch ↔ opencode run</text>
+  <rect x="320" y="290" width="230" height="60" rx="6" fill="#ffffff" stroke="#e3c088"/>
+  <text x="435" y="312" text-anchor="middle" font-size="11.5" fill="#24292f">迭代器壳（SDK）</text>
+  <text x="435" y="332" text-anchor="middle" font-size="10" fill="#6a737d">async 迭代 ↔ packages/sdk · client</text>
+  <rect x="570" y="290" width="230" height="60" rx="6" fill="#ffffff" stroke="#e3c088"/>
+  <text x="685" y="312" text-anchor="middle" font-size="11.5" fill="#24292f">事件订阅壳（TUI/Web/桌面）</text>
+  <text x="685" y="332" text-anchor="middle" font-size="10" fill="#6a737d">SSE ↔ tui · app · desktop · vscode · acp</text>
+
+  <rect x="40" y="382" width="790" height="46" rx="8" fill="#fdf3f3" stroke="#c98a8a"/>
+  <text x="435" y="402" text-anchor="middle" font-size="12" font-weight="bold" fill="#8a3030">契约即边界：壳摸内核私有状态在 JS 里拦不住——真实产品靠 specs/tui-package.md + SDK 生成堵死这条路</text>
+  <text x="435" y="422" text-anchor="middle" font-size="11" fill="#8a3030">fork 命名同理克制：&lt;base&gt; (fork #N) 自动递增、序号复用最小空位（session.ts:162-168）</text>
+</svg>

@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="870" height="490" viewBox="0 0 870 490" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="870" height="490" fill="#fafbfc"/>
+  <text x="435" y="34" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">中间件：钩子位在图上，逻辑在洋葱里</text>
+
+  <!-- hook positions on the loop -->
+  <rect x="40" y="60" width="790" height="118" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="66" y="88" font-size="15" font-weight="bold" fill="#2b5985">七个钩子位（types.py 实测：:431 / :455 / :479 / :503 / :598 / :650 / :674）</text>
+  <path d="M 80 148 L 260 148" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="100" y="136" font-size="12.5" fill="#24292f">before_agent（一次）</text>
+  <circle cx="300" cy="148" r="5" fill="#4a78b5"/>
+  <text x="290" y="136" font-size="12.5" fill="#24292f">before_model</text>
+  <circle cx="430" cy="148" r="5" fill="#8250df"/>
+  <text x="408" y="136" font-size="12.5" fill="#8250df">wrap_model_call</text>
+  <circle cx="560" cy="148" r="5" fill="#4a78b5"/>
+  <text x="548" y="136" font-size="12.5" fill="#24292f">after_model</text>
+  <circle cx="680" cy="148" r="5" fill="#8250df"/>
+  <text x="668" y="136" font-size="12.5" fill="#8250df">wrap_tool_call</text>
+  <path d="M 700 148 L 800 148" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="735" y="170" font-size="12.5" fill="#24292f">after_agent（一次）</text>
+  <text x="435" y="120" text-anchor="middle" font-size="12" fill="#6a737d">钩子织入图时各自成为显式节点（factory.py:1648-1726 成排 add_node；:2131 串边）</text>
+
+  <!-- onion -->
+  <rect x="40" y="200" width="410" height="260" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="245" y="228" text-anchor="middle" font-size="15" font-weight="bold" fill="#2c7a3f">wrap_model_call 的洋葱（注册顺序 = 层级）</text>
+  <rect x="70" y="248" width="350" height="190" rx="12" fill="#e7f2ff" stroke="#4a78b5"/>
+  <text x="245" y="272" text-anchor="middle" font-size="13" fill="#2b5985">外层：pii_mask（先进入、后返回）</text>
+  <rect x="100" y="286" width="290" height="130" rx="12" fill="#fff8e6" stroke="#bd8a00"/>
+  <text x="245" y="310" text-anchor="middle" font-size="13" fill="#8a6500">内层：audit（看到的已是脱敏消息）</text>
+  <rect x="130" y="324" width="230" height="70" rx="12" fill="#fdebea" stroke="#cf222e"/>
+  <text x="245" y="348" text-anchor="middle" font-size="13" fill="#a40e26">最里层：模型真正被调用</text>
+  <text x="245" y="372" text-anchor="middle" font-size="11.5" fill="#a40e26">handler(request) = 下一层</text>
+  <text x="245" y="422" text-anchor="middle" font-size="11.5" fill="#6a737d">返回顺序与进入顺序严格相反</text>
+  <text x="245" y="444" text-anchor="middle" font-size="11.5" fill="#b35900">包裹型可以不调 handler = 拦截</text>
+
+  <!-- order lesson -->
+  <rect x="480" y="200" width="350" height="260" rx="10" fill="#f6f8fa" stroke="#c9d4de" stroke-dasharray="4 3"/>
+  <text x="655" y="228" text-anchor="middle" font-size="15" font-weight="bold" fill="#24292f">顺序即安全边界（场景 4 实测）</text>
+  <rect x="505" y="248" width="300" height="76" rx="8" fill="#eefaf0" stroke="#93c9a0"/>
+  <text x="655" y="272" text-anchor="middle" font-size="12.5" fill="#24292f">[pii_mask, audit]</text>
+  <text x="655" y="294" text-anchor="middle" font-size="12.5" fill="#2c7a3f">audit 看到的是 ***MASKED*** ✓</text>
+  <rect x="505" y="340" width="300" height="76" rx="8" fill="#fdebea" stroke="#cf222e"/>
+  <text x="655" y="364" text-anchor="middle" font-size="12.5" fill="#24292f">[audit, pii_mask]（交换后）</text>
+  <text x="655" y="386" text-anchor="middle" font-size="12.5" fill="#a40e26">audit 看到明文手机号 ✗ 泄漏</text>
+  <text x="655" y="444" text-anchor="middle" font-size="12" fill="#6a737d">观察型钩子改 state（脱敏/限流可终止）</text>
+  <text x="655" y="462" text-anchor="middle" font-size="12" fill="#6a737d">包裹型钩子拦调用（审批/审计/重试）</text>
+</svg>

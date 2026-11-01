@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="470" viewBox="0 0 860 470" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+    <marker id="arrP" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#8250df"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="860" height="470" fill="#fafbfc"/>
+  <text x="430" y="34" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">MCP：stdio 上的双向 JSON-RPC（一次 weather 调用的时序）</text>
+
+  <!-- lifelines -->
+  <rect x="60" y="70" width="200" height="56" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="160" y="94" text-anchor="middle" font-size="14" font-weight="bold" fill="#2b5985">宿主（client）</text>
+  <text x="160" y="114" text-anchor="middle" font-size="10.5" fill="#6a737d">codex-mcp / rmcp-client</text>
+  <line x1="160" y1="126" x2="160" y2="420" stroke="#8fb3d9" stroke-width="2" stroke-dasharray="5 4"/>
+
+  <rect x="330" y="70" width="200" height="56" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="430" y="94" text-anchor="middle" font-size="14" font-weight="bold" fill="#2c7a3f">MCP server（子进程）</text>
+  <text x="430" y="114" text-anchor="middle" font-size="10.5" fill="#6a737d">stdio 传输 · 行分隔 JSON</text>
+  <line x1="430" y1="126" x2="430" y2="420" stroke="#93c9a0" stroke-width="2" stroke-dasharray="5 4"/>
+
+  <rect x="610" y="70" width="200" height="56" rx="10" fill="#f3eefb" stroke="#8250df" stroke-width="2"/>
+  <text x="710" y="94" text-anchor="middle" font-size="14" font-weight="bold" fill="#6639ba">用户（前端）</text>
+  <text x="710" y="114" text-anchor="middle" font-size="10.5" fill="#6a737d">TUI / IDE / App</text>
+  <line x1="710" y1="126" x2="710" y2="420" stroke="#c9b1ec" stroke-width="2" stroke-dasharray="5 4"/>
+
+  <!-- sequence -->
+  <line x1="160" y1="155" x2="425" y2="155" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="292" y="148" text-anchor="middle" font-size="11.5" fill="#24292f">① initialize / notifications/initialized</text>
+  <line x1="160" y1="190" x2="425" y2="190" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="292" y="183" text-anchor="middle" font-size="11.5" fill="#24292f">② tools/list → ['echo','weather']</text>
+  <text x="292" y="207" text-anchor="middle" font-size="10.5" fill="#6a737d">注册进 ToolRegistry（内核同一套运行时）</text>
+  <line x1="160" y1="240" x2="425" y2="240" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="292" y="233" text-anchor="middle" font-size="11.5" fill="#24292f">③ tools/call 'weather'</text>
+
+  <!-- elicitation reverse -->
+  <path d="M 430 270 C 500 270 560 275 705 285" fill="none" stroke="#8250df" stroke-width="2.5" marker-end="url(#arrP)"/>
+  <text x="572" y="262" text-anchor="middle" font-size="11.5" fill="#8250df">④ elicitation/create（server 发起的请求！）</text>
+  <path d="M 710 300 C 560 315 480 315 434 310" fill="none" stroke="#8250df" stroke-width="2.5" stroke-dasharray="6 4" marker-end="url(#arrP)"/>
+  <text x="572" y="330" text-anchor="middle" font-size="11.5" fill="#8250df">⑤ result {action: allow}（id 配对，交错返回）</text>
+
+  <line x1="430" y1="360" x2="165" y2="360" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="292" y="353" text-anchor="middle" font-size="11.5" fill="#24292f">⑥ result "晴，22°C" → 回填模型</text>
+
+  <!-- error path -->
+  <rect x="60" y="384" width="750" height="46" rx="8" fill="#fdebe8" stroke="#d4726a"/>
+  <text x="435" y="403" text-anchor="middle" font-size="12" fill="#24292f">失败路径：未知工具 → {"id":n,"error":{"code":-32602,…}} —— 协议级错误对象，宿主转成 ToolOutput 合成结果</text>
+  <text x="435" y="421" text-anchor="middle" font-size="11" fill="#a83a30">读线程永不等响应：请求在工作线程处理，双向通道才不会死锁</text>
+
+  <text x="430" y="452" text-anchor="middle" font-size="11.5" fill="#6a737d">mini 实现：s06_mcp_bridge/code.py（同文件 --serve 扮演 server）｜ 真实：codex-mcp/src/connection_manager.rs · core/src/elicitation.rs</text>
+</svg>

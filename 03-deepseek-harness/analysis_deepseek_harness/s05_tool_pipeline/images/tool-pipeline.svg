@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="430" viewBox="0 0 880 430" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="880" height="430" fill="#fafbfc"/>
+  <text x="440" y="32" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">工具执行：有界滚动池 + exclusive 屏障 + 模型序提交</text>
+
+  <!-- model calls -->
+  <rect x="40" y="70" width="200" height="150" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="140" y="96" text-anchor="middle" font-size="14" font-weight="bold" fill="#2b5985">模型的 tool/call</text>
+  <text x="60" y="126" font-size="12.5" fill="#24292f" font-family="Consolas, monospace">A slow_read（并行·40ms）</text>
+  <text x="60" y="150" font-size="12.5" fill="#24292f" font-family="Consolas, monospace">B fast_stat（并行·10ms）</text>
+  <text x="60" y="174" font-size="12.5" fill="#24292f" font-family="Consolas, monospace">C deploy　（互斥屏障）</text>
+  <text x="60" y="198" font-size="12.5" fill="#24292f" font-family="Consolas, monospace">D slow_read（会被拒）</text>
+
+  <!-- pool -->
+  <rect x="320" y="70" width="250" height="150" rx="10" fill="#fdf6ec" stroke="#c98a2b" stroke-width="2"/>
+  <text x="445" y="96" text-anchor="middle" font-size="14" font-weight="bold" fill="#8a5a12">调度（tool-calls.ts）</text>
+  <rect x="340" y="110" width="210" height="30" rx="6" fill="#ffffff" stroke="#dcb67a"/>
+  <text x="445" y="130" text-anchor="middle" font-size="12" fill="#24292f">并行组 → 有界滚动池（池宽 2）</text>
+  <rect x="340" y="148" width="210" height="30" rx="6" fill="#ffffff" stroke="#dcb67a"/>
+  <text x="445" y="168" text-anchor="middle" font-size="12" fill="#24292f">exclusive → 屏障：独占运行</text>
+  <rect x="340" y="186" width="210" height="26" rx="6" fill="#ffffff" stroke="#dcb67a"/>
+  <text x="445" y="204" text-anchor="middle" font-size="11.5" fill="#8a5a12">每格 dispatch 前重读 executionMode</text>
+  <line x1="240" y1="145" x2="315" y2="145" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- pipeline -->
+  <rect x="320" y="248" width="250" height="120" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="445" y="274" text-anchor="middle" font-size="14" font-weight="bold" fill="#2c7a3f">把关流水线（四拍）</text>
+  <text x="445" y="300" text-anchor="middle" font-size="12.5" fill="#24292f">prepare（可同步拒否）</text>
+  <text x="445" y="322" text-anchor="middle" font-size="12.5" fill="#24292f">dispatch → finalize → finish</text>
+  <text x="445" y="348" text-anchor="middle" font-size="11.5" fill="#2c7a3f">被拒的调用也有配对结果，不造空洞</text>
+  <path d="M 445 220 L 445 244" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- commit -->
+  <rect x="640" y="70" width="210" height="298" rx="10" fill="#f3eefe" stroke="#8250df" stroke-width="2"/>
+  <text x="745" y="96" text-anchor="middle" font-size="14" font-weight="bold" fill="#6639ba">落日志（模型序！）</text>
+  <g font-size="12" fill="#24292f" font-family="Consolas, monospace">
+    <text x="660" y="130">t=10　B 完成 → 等 A</text>
+    <text x="660" y="154">t=40　A 完成</text>
+    <text x="660" y="178">t=40　提交 A ←─┐ 连续前缀</text>
+    <text x="660" y="202">t=40　提交 B ←─┘ 才能推进</text>
+    <text x="660" y="226">t=40　C 独占执行</text>
+    <text x="660" y="250">t=41　提交 C</text>
+    <text x="660" y="274">t=41　D 被 pre 拒</text>
+    <text x="660" y="298">t=41　提交 D（合成错误）</text>
+  </g>
+  <text x="745" y="336" text-anchor="middle" font-size="12" fill="#6639ba">执行可以乱序，结果必须模型序</text>
+  <line x1="570" y1="145" x2="635" y2="145" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <text x="440" y="406" text-anchor="middle" font-size="13" fill="#6a737d">对应真实源码：packages/core/tools/src/index.ts（registry :780 · mode :1266）｜agent-loop/tool-calls.ts（:60 · commitReady :147）</text>
+</svg>

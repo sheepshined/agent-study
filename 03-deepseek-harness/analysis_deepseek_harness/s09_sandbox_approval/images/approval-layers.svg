@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="420" viewBox="0 0 880 420" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="880" height="420" fill="#fafbfc"/>
+  <text x="440" y="32" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">安全三层：权限预设 → 审批服务 → 沙箱边界</text>
+
+  <!-- layer 1: preset -->
+  <rect x="45" y="66" width="240" height="280" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="165" y="94" text-anchor="middle" font-size="15" font-weight="bold" fill="#2b5985">① 权限预设（配置）</text>
+  <g font-size="12.5" fill="#24292f">
+    <rect x="65" y="112" width="200" height="30" rx="6" fill="#eefaf0" stroke="#93c9a0"/><text x="165" y="132" text-anchor="middle">read_file → allow</text>
+    <rect x="65" y="150" width="200" height="30" rx="6" fill="#fdf6ec" stroke="#dcb67a"/><text x="165" y="170" text-anchor="middle">write_file → ask</text>
+    <rect x="65" y="188" width="200" height="30" rx="6" fill="#fff3f3" stroke="#e3a1a1"/><text x="165" y="208" text-anchor="middle">delete_file → ask / deny</text>
+  </g>
+  <text x="165" y="248" text-anchor="middle" font-size="12" fill="#24292f">readonly / standard / yolo</text>
+  <text x="165" y="270" text-anchor="middle" font-size="11.5" fill="#6a737d">预设切换也落 permission/preset 事件</text>
+  <text x="165" y="300" text-anchor="middle" font-size="11.5" fill="#b35900">yolo 仅限一次性 VM/容器</text>
+  <text x="165" y="320" text-anchor="middle" font-size="11.5" fill="#b35900">（官方 SAFETY.zh.md 的告诫）</text>
+
+  <!-- layer 2: approval -->
+  <rect x="350" y="66" width="220" height="280" rx="10" fill="#fdf6ec" stroke="#c98a2b" stroke-width="2"/>
+  <text x="460" y="94" text-anchor="middle" font-size="15" font-weight="bold" fill="#8a5a12">② 审批服务（问人）</text>
+  <text x="460" y="124" text-anchor="middle" font-size="12.5" fill="#24292f">ask → approval/asked 事件</text>
+  <text x="460" y="148" text-anchor="middle" font-size="12.5" fill="#24292f">人（UI/ACP 往返）决定</text>
+  <text x="460" y="172" text-anchor="middle" font-size="12.5" fill="#24292f">→ approval/decided 事件</text>
+  <rect x="370" y="192" width="180" height="60" rx="6" fill="#ffffff" stroke="#dcb67a"/>
+  <text x="460" y="216" text-anchor="middle" font-size="12" fill="#24292f">会话内记住决定</text>
+  <text x="460" y="238" text-anchor="middle" font-size="12" fill="#24292f">同键不再重复打扰</text>
+  <text x="460" y="280" text-anchor="middle" font-size="11.5" fill="#8a5a12">allow / deny 都有事件 ——</text>
+  <text x="460" y="300" text-anchor="middle" font-size="11.5" fill="#8a5a12">安全决策全程可审计</text>
+
+  <!-- layer 3: sandbox -->
+  <rect x="635" y="66" width="215" height="280" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="742" y="94" text-anchor="middle" font-size="15" font-weight="bold" fill="#2c7a3f">③ 沙箱（执行边界）</text>
+  <text x="742" y="124" text-anchor="middle" font-size="12.5" fill="#24292f">审批通过 ≠ 出笼</text>
+  <text x="742" y="150" text-anchor="middle" font-size="12.5" fill="#24292f">路径边界 / 超时 / 重复提醒</text>
+  <rect x="655" y="170" width="175" height="90" rx="6" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="742" y="196" text-anchor="middle" font-size="12" fill="#24292f">sandbox-local（进程）</text>
+  <text x="742" y="218" text-anchor="middle" font-size="12" fill="#24292f">Landlock（Linux 内核）</text>
+  <text x="742" y="240" text-anchor="middle" font-size="12" fill="#24292f">windows-acl（ACL）</text>
+  <text x="742" y="290" text-anchor="middle" font-size="11.5" fill="#2c7a3f">多层防线：一层失守还有下一层</text>
+  <text x="742" y="312" text-anchor="middle" font-size="11.5" fill="#2c7a3f">guard 包：超时策略 · 重复工具提醒</text>
+
+  <!-- flow arrows -->
+  <line x1="285" y1="205" x2="345" y2="205" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="570" y1="205" x2="630" y2="205" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="315" y="192" text-anchor="middle" font-size="12" fill="#24292f">ask 档</text>
+  <text x="600" y="192" text-anchor="middle" font-size="12" fill="#24292f">放行</text>
+
+  <text x="440" y="388" text-anchor="middle" font-size="13" fill="#6a737d">对应真实源码：packages/interaction/{user-approval,permission-presets}/ ｜ packages/sandbox/ ｜ native/system/（Landlock）｜ guard/</text>
+  <text x="440" y="410" text-anchor="middle" font-size="12" fill="#8250df">事件词汇：approval/asked · approval/decided · approval/policy · permission/preset · sandbox/mode</text>
+</svg>

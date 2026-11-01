@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="430" viewBox="0 0 880 430" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="880" height="430" fill="#fafbfc"/>
+  <text x="440" y="32" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">仅追加的会话日志：真源、投影与前向兼容闸门</text>
+
+  <!-- append-only log -->
+  <rect x="50" y="66" width="340" height="280" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="220" y="94" text-anchor="middle" font-size="15" font-weight="bold" fill="#2b5985">JSONL 日志（只追加，永不改写）</text>
+  <g font-size="12" fill="#24292f" font-family="Consolas, monospace">
+    <rect x="75" y="110" width="290" height="30" rx="4" fill="#ffffff" stroke="#8fb3d9"/>
+    <text x="85" y="130">#01 user/message　"帮我总结…"</text>
+    <rect x="75" y="148" width="290" height="30" rx="4" fill="#ffffff" stroke="#8fb3d9"/>
+    <text x="85" y="168">#02 assistant/message（第一版）</text>
+    <rect x="75" y="186" width="290" height="30" rx="4" fill="#fff3f3" stroke="#e3a1a1"/>
+    <text x="85" y="206">#03 feedback/message-delete m2</text>
+    <rect x="75" y="224" width="290" height="30" rx="4" fill="#fff3f3" stroke="#e3a1a1"/>
+    <text x="85" y="244">#04 feedback/message-put　m2 新文本</text>
+    <rect x="75" y="262" width="290" height="30" rx="4" fill="#f6f8fa" stroke="#c9d4de" stroke-dasharray="4 3"/>
+    <text x="85" y="282">#05 …（历史永远只增不减）</text>
+  </g>
+  <text x="220" y="322" text-anchor="middle" font-size="12.5" fill="#b35900">"编辑历史" = 追加修正事件，原文不动</text>
+
+  <!-- projection -->
+  <rect x="520" y="66" width="310" height="170" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="675" y="94" text-anchor="middle" font-size="15" font-weight="bold" fill="#2c7a3f">投影（fold：events → state）</text>
+  <rect x="545" y="110" width="260" height="36" rx="6" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="675" y="133" text-anchor="middle" font-size="12.5" fill="#24292f">消息列表（delete/put 折叠后）</text>
+  <rect x="545" y="156" width="260" height="36" rx="6" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="675" y="179" text-anchor="middle" font-size="12.5" fill="#24292f">inbox 队列（agent/inbox/spliced）</text>
+  <text x="675" y="220" text-anchor="middle" font-size="12.5" fill="#2c7a3f">同一日志重放 N 次 → N 个相同状态</text>
+
+  <!-- read gate -->
+  <rect x="520" y="258" width="310" height="128" rx="10" fill="#fdf6ec" stroke="#c98a2b" stroke-width="2"/>
+  <text x="675" y="284" text-anchor="middle" font-size="14" font-weight="bold" fill="#8a5a12">读路径三道闸（load 时逐条过）</text>
+  <text x="540" y="310" font-size="12.5" fill="#24292f">① seq 连续 —— 空洞即损坏，拒绝</text>
+  <text x="540" y="332" font-size="12.5" fill="#24292f">② 未知类型且无 ignorable → 拒绝读</text>
+  <text x="540" y="354" font-size="12.5" fill="#24292f">③ 带 ignorable → 跳过（前向兼容口）</text>
+  <text x="675" y="378" text-anchor="middle" font-size="11.5" fill="#8a5a12">静默跳过会重建出错误会话，宁可不读</text>
+
+  <!-- arrows -->
+  <line x1="390" y1="160" x2="515" y2="130" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="452" y="118" text-anchor="middle" font-size="13" fill="#24292f">fold</text>
+  <path d="M 675 240 C 675 250 675 252 675 254" fill="none" stroke="#c98a2b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <text x="440" y="412" text-anchor="middle" font-size="13" fill="#6a737d">对应真实源码：packages/core/session/src/{types,known-event-types,repair}.ts 与 packages/session/session-persistence-jsonl/</text>
+</svg>

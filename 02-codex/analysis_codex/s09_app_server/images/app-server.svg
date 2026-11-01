@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="540" viewBox="0 0 880 540" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+    <marker id="arrP" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#8250df"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#d4726a"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="880" height="540" fill="#fafbfc"/>
+  <text x="440" y="32" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">app-server：内核只此一份，前端都是客户端（行分隔 JSON-RPC）</text>
+
+  <!-- 前端 -->
+  <rect x="28" y="56" width="176" height="86" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="116" y="78" text-anchor="middle" font-size="13" font-weight="bold" fill="#2b5985">TUI / Desktop</text>
+  <text x="116" y="96" text-anchor="middle" font-size="10" fill="#6a737d">spawn 子进程</text>
+  <text x="116" y="112" text-anchor="middle" font-size="10" fill="#6a737d">--listen stdio://</text>
+  <text x="116" y="128" text-anchor="middle" font-size="10" fill="#2b5985">一条连接 = 一根管道</text>
+
+  <rect x="220" y="56" width="176" height="86" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="308" y="78" text-anchor="middle" font-size="13" font-weight="bold" fill="#2b5985">IDE 插件</text>
+  <text x="308" y="96" text-anchor="middle" font-size="10" fill="#6a737d">连共享守护进程</text>
+  <text x="308" y="112" text-anchor="middle" font-size="10" fill="#6a737d">unix:// → UDS + WebSocket</text>
+  <text x="308" y="128" text-anchor="middle" font-size="10" fill="#2b5985">codex-home/app-server-control/</text>
+
+  <rect x="412" y="56" width="176" height="86" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="500" y="78" text-anchor="middle" font-size="13" font-weight="bold" fill="#2b5985">远程 / 跨机前端</text>
+  <text x="500" y="96" text-anchor="middle" font-size="10" fill="#6a737d">--listen ws://IP:PORT</text>
+  <text x="500" y="112" text-anchor="middle" font-size="10" fill="#6a737d">websocket.rs acceptor</text>
+  <text x="500" y="128" text-anchor="middle" font-size="10" fill="#2b5985">协议不变</text>
+
+  <rect x="604" y="56" width="248" height="86" rx="10" fill="#f3eefb" stroke="#8250df" stroke-width="2"/>
+  <text x="728" y="78" text-anchor="middle" font-size="13" font-weight="bold" fill="#6639ba">同进程嵌入（exec / SDK）</text>
+  <text x="728" y="96" text-anchor="middle" font-size="10" fill="#6a737d">app-server/src/in_process.rs</text>
+  <text x="728" y="112" text-anchor="middle" font-size="10" fill="#6a737d">没有进程边界，但保留请求/通知/事件模型</text>
+  <text x="728" y="128" text-anchor="middle" font-size="10" fill="#6639ba">AppServerClient::{InProcess, Remote}</text>
+
+  <!-- server -->
+  <rect x="28" y="170" width="824" height="200" rx="10" fill="#ffffff" stroke="#5a6b7b" stroke-width="2"/>
+  <text x="440" y="192" text-anchor="middle" font-size="14" font-weight="bold" fill="#24292f">app-server（每连接一套闸与队列 + 一份内核）</text>
+
+  <rect x="44" y="206" width="196" height="148" rx="8" fill="#f6f8fa" stroke="#c3d4e6"/>
+  <text x="142" y="226" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#2b5985">① 连接层</text>
+  <text x="142" y="244" text-anchor="middle" font-size="10" fill="#24292f">ConnectionId(u64) 自增</text>
+  <text x="142" y="260" text-anchor="middle" font-size="10" fill="#24292f">ConnectionRpcGate：关门只收尾</text>
+  <text x="142" y="276" text-anchor="middle" font-size="10" fill="#24292f">会话状态：initialized /</text>
+  <text x="142" y="290" text-anchor="middle" font-size="10" fill="#24292f">experimentalApi</text>
+  <text x="142" y="308" text-anchor="middle" font-size="10" fill="#a83a30">outbox 有界 128 → -32001</text>
+
+  <rect x="256" y="206" width="228" height="148" rx="8" fill="#f6f8fa" stroke="#c3d4e6"/>
+  <text x="370" y="226" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#2b5985">② 方法表（宏生成）</text>
+  <text x="266" y="244" font-size="10" fill="#24292f">initialize → 能力协商（:507）</text>
+  <text x="266" y="260" font-size="10" fill="#24292f">thread/start（:559）· subscribe/unsubscribe（:587）</text>
+  <text x="266" y="276" font-size="10" fill="#24292f">turn/start（:1038）· steer（:1050）</text>
+  <text x="266" y="292" font-size="10" fill="#24292f">turn/interrupt（:1056）· thread/delete</text>
+  <text x="266" y="310" font-size="10" fill="#a83a30">未握手 → -32600 "Not initialized"</text>
+  <text x="266" y="326" font-size="10" fill="#a83a30">实验方法未 opt-in → -32600</text>
+
+  <rect x="500" y="206" width="164" height="148" rx="8" fill="#eefaf0" stroke="#93c9a0"/>
+  <text x="582" y="226" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#2c7a3f">③ 内核（core）</text>
+  <text x="582" y="246" text-anchor="middle" font-size="10" fill="#24292f">thread 表 · 回合任务</text>
+  <text x="582" y="262" text-anchor="middle" font-size="10" fill="#24292f">审批 / 沙箱 / 录制</text>
+  <text x="582" y="278" text-anchor="middle" font-size="10" fill="#24292f">（s03-s05 的全部机制）</text>
+  <text x="582" y="300" text-anchor="middle" font-size="10" fill="#2c7a3f">worker 的关闭由它的</text>
+  <text x="582" y="316" text-anchor="middle" font-size="10" fill="#2c7a3f">owner 控制：删活线程</text>
+  <text x="582" y="332" text-anchor="middle" font-size="10" fill="#2c7a3f">返回 -32600</text>
+
+  <rect x="680" y="206" width="156" height="148" rx="8" fill="#f3eefb" stroke="#c9b1ec"/>
+  <text x="758" y="226" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#6639ba">④ 事件分发</text>
+  <text x="690" y="246" font-size="10" fill="#24292f">按 thread 订阅集推送</text>
+  <text x="690" y="262" font-size="10" fill="#6639ba">turn/started（:1935）</text>
+  <text x="690" y="278" font-size="10" fill="#6639ba">item/started·completed</text>
+  <text x="690" y="294" font-size="10" fill="#6639ba">turn/diff/updated（:1939）</text>
+  <text x="690" y="310" font-size="10" fill="#6639ba">turn/completed（:1937）</text>
+  <text x="690" y="332" font-size="10" fill="#6a737d">通知无 id：单向流</text>
+
+  <!-- arrows -->
+  <line x1="116" y1="142" x2="116" y2="168" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="308" y1="142" x2="308" y2="168" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="500" y1="142" x2="500" y2="168" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="728" y1="142" x2="728" y2="168" stroke="#8250df" stroke-width="2" marker-end="url(#arrP)"/>
+  <path d="M180 370 L180 392 L640 392 L640 370" fill="none" stroke="#8250df" stroke-width="2" marker-end="url(#arrP)"/>
+  <text x="410" y="388" text-anchor="middle" font-size="10.5" fill="#6639ba">事件流回各连接：同一份流，不同投影</text>
+
+  <!-- 反向请求 -->
+  <path d="M300 168 L300 152 " fill="none" stroke="#d4726a" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrR)"/>
+  <rect x="28" y="398" width="824" height="58" rx="8" fill="#fdebe8" stroke="#d4726a"/>
+  <text x="440" y="419" text-anchor="middle" font-size="11.5" fill="#24292f">反向请求（方向相反的一条 request）：item/commandExecution/requestApproval（:1756）· item/fileChange（:1763）</text>
+  <text x="440" y="435" text-anchor="middle" font-size="11.5" fill="#24292f">item/permissions/requestApproval（:1781）· mcpServer/elicitation/request（:1775）→ 送回「握着用户的那条连接」</text>
+  <text x="440" y="450" text-anchor="middle" font-size="10.5" fill="#a83a30">客户端的答案同样靠 id 配对；两端 id 空间独立 —— s06 的双向机制在这里是产品主路，不是边角</text>
+
+  <text x="440" y="484" text-anchor="middle" font-size="11.5" fill="#6a737d">mini 实现：s09_app_server/code.py（--serve 自扮子进程走 stdio；其余场景同进程多连接）</text>
+  <text x="440" y="504" text-anchor="middle" font-size="11" fill="#8b949e">真实：app-server-protocol/src/rpc.rs:1-2（不发 jsonrpc 字段）· app-server/src/message_processor.rs:967·973 · transport/mod.rs:28·49-50·88·123</text>
+</svg>

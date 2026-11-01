@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="870" height="480" viewBox="0 0 870 480" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="870" height="480" fill="#fafbfc"/>
+  <text x="435" y="34" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">streaming 双通道：数据逐段到达，事件交错记录</text>
+
+  <!-- two channels -->
+  <rect x="40" y="60" width="790" height="200" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="66" y="88" font-size="15" font-weight="bold" fill="#2b5985">场景 1 的时间线（数据通道在上，事件通道在下，同一条时间轴）</text>
+
+  <text x="66" y="118" font-size="12.5" fill="#2b5985">数据通道（chunk 流）</text>
+  <g font-size="12" fill="#24292f">
+    <rect x="66" y="128" width="88" height="30" rx="6" fill="#ffffff" stroke="#8fb3d9"/>
+    <text x="110" y="148" text-anchor="middle">北京</text>
+    <rect x="166" y="128" width="88" height="30" rx="6" fill="#ffffff" stroke="#8fb3d9"/>
+    <text x="210" y="148" text-anchor="middle">今天</text>
+    <rect x="266" y="128" width="88" height="30" rx="6" fill="#ffffff" stroke="#8fb3d9"/>
+    <text x="310" y="148" text-anchor="middle">晴</text>
+    <rect x="366" y="128" width="88" height="30" rx="6" fill="#ffffff" stroke="#8fb3d9"/>
+    <text x="410" y="148" text-anchor="middle">，</text>
+    <rect x="466" y="128" width="88" height="30" rx="6" fill="#ffffff" stroke="#8fb3d9"/>
+    <text x="510" y="148" text-anchor="middle">26°C</text>
+    <rect x="566" y="128" width="88" height="30" rx="6" fill="#ffffff" stroke="#8fb3d9"/>
+    <text x="610" y="148" text-anchor="middle">。</text>
+  </g>
+  <text x="700" y="148" font-size="12" fill="#8250df">→ __add__ 合并（ai.py:642）</text>
+
+  <text x="66" y="192" font-size="12.5" fill="#8a6500">事件通道（生命周期）</text>
+  <g font-size="12" fill="#8a6500">
+    <rect x="66" y="202" width="150" height="30" rx="6" fill="#fff8e6" stroke="#e0c078"/>
+    <text x="141" y="222" text-anchor="middle">on_chat_model_start</text>
+    <rect x="240" y="202" width="270" height="30" rx="6" fill="#fff8e6" stroke="#e0c078"/>
+    <text x="375" y="222" text-anchor="middle">on_llm_new_token × 6（交错记录）</text>
+    <rect x="534" y="202" width="120" height="30" rx="6" fill="#fff8e6" stroke="#e0c078"/>
+    <text x="594" y="222" text-anchor="middle">on_llm_end</text>
+  </g>
+  <text x="700" y="222" font-size="12" fill="#6a737d">→ 回调树（s02）</text>
+
+  <!-- invariant + fake stream -->
+  <rect x="40" y="284" width="385" height="170" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="232" y="312" text-anchor="middle" font-size="15" font-weight="bold" fill="#2c7a3f">流式不变量（场景 2 实测）</text>
+  <text x="232" y="342" text-anchor="middle" font-size="13.5" fill="#24292f">sum(chunks) == invoke()</text>
+  <text x="232" y="368" text-anchor="middle" font-size="12.5" fill="#24292f">'北京今天晴，26°C。' == '北京今天晴，26°C。' ✓</text>
+  <text x="232" y="396" text-anchor="middle" font-size="12" fill="#6a737d">分段到达，合并无损——下游拿到的东西与一次性调用完全等价</text>
+  <text x="232" y="424" text-anchor="middle" font-size="12" fill="#b35900">分片相加由 __add__ 重载保证（AIMessageChunk，ai.py:418）</text>
+
+  <rect x="445" y="284" width="385" height="170" rx="10" fill="#fdebea" stroke="#cf222e" stroke-width="2"/>
+  <text x="637" y="312" text-anchor="middle" font-size="15" font-weight="bold" fill="#a40e26">假流式（chat_models.py:735 分支）</text>
+  <text x="637" y="342" text-anchor="middle" font-size="13" fill="#24292f">模型没实现 _stream → 判定 _should_stream（:549）不通过</text>
+  <text x="637" y="368" text-anchor="middle" font-size="13" fill="#24292f">整段 invoke 一次 → 包成单个 chunk 吐出（场景 3：chunk 数 = 1）</text>
+  <text x="637" y="396" text-anchor="middle" font-size="12" fill="#6a737d">接口统一：没有真流式也不崩，只是体验降级</text>
+  <text x="637" y="424" text-anchor="middle" font-size="12" fill="#a40e26">agent 流式纪律：tool_calls 流末才完整，攒完流再做路由（场景 4）</text>
+</svg>

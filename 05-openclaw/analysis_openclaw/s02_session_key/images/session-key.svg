@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="450" viewBox="0 0 880 450" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="880" height="450" fill="#fafbfc"/>
+  <text x="440" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">s02 sessionKey 路由：多渠道消息归一到会话</text>
+
+  <!-- inbound messages -->
+  <rect x="28" y="60" width="212" height="300" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="134" y="88" text-anchor="middle" font-size="14" font-weight="bold" fill="#2b5985">五条入站消息（异形）</text>
+  <g font-size="11" font-family="Consolas, monospace" fill="#24292f">
+    <text x="44" y="118">TG 私聊 alice</text>
+    <text x="44" y="140">TG 私聊 bob</text>
+    <text x="44" y="162">WA 私聊 carol</text>
+    <text x="44" y="184">TG 群 -100…#topic 42</text>
+    <text x="44" y="206">DC 频道 123…#thread 987</text>
+  </g>
+  <g font-size="11" fill="#8a5a12">
+    <text x="44" y="240">私聊默认全部收敛：</text>
+    <text x="44" y="258">三个人共享同一个主会话</text>
+    <text x="44" y="290">（群/频道按 peer 隔离，</text>
+    <text x="44" y="308">线程/话题只做后缀）</text>
+  </g>
+
+  <!-- resolve -->
+  <rect x="300" y="120" width="220" height="180" rx="10" fill="#fdf6ec" stroke="#c98a2b" stroke-width="2"/>
+  <text x="410" y="150" text-anchor="middle" font-size="14" font-weight="bold" fill="#8a5a12">resolveRoute</text>
+  <g font-size="12" fill="#24292f">
+    <text x="316" y="178">1. binding 匹配（账号→agent）</text>
+    <text x="316" y="202">2. dmScope / groupScope 收敛</text>
+    <text x="316" y="226">3. peer 分类 direct/group/channel</text>
+    <text x="316" y="250">4. 拼 :thread: / :topic: 后缀</text>
+    <text x="316" y="282" font-size="11" fill="#8a5a12">sessionKey = 路由选择器，不是授权令牌</text>
+  </g>
+  <line x1="240" y1="200" x2="294" y2="200" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- sessions -->
+  <rect x="580" y="66" width="272" height="308" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="716" y="94" text-anchor="middle" font-size="14" font-weight="bold" fill="#2c7a3f">会话（同一 agent）</text>
+  <g font-size="11.5" font-family="Consolas, monospace" fill="#24292f">
+    <text x="596" y="126" font-weight="bold" fill="#2c7a3f">agent:main:main</text>
+    <text x="608" y="146">← TG alice / TG bob / WA carol</text>
+    <text x="596" y="184" font-weight="bold" fill="#2c7a3f">agent:main:telegram:group:-100…</text>
+    <text x="608" y="204">:topic:42 ← TG 群话题</text>
+    <text x="596" y="242" font-weight="bold" fill="#2c7a3f">agent:main:discord:channel:123…</text>
+    <text x="608" y="262">:thread:987 ← Discord 线程</text>
+    <text x="596" y="300" font-weight="bold" fill="#2c7a3f">agent:main:subagent:&lt;uuid&gt;</text>
+    <text x="608" y="320">← 子代理独立会话（s03 的 lane 客）</text>
+  </g>
+  <text x="716" y="356" text-anchor="middle" font-size="11" fill="#2c7a3f">每条会话各自记一条"最后投递路由"</text>
+  <line x1="520" y1="200" x2="574" y2="200" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- reply pin -->
+  <rect x="300" y="340" width="220" height="76" rx="10" fill="#f3eefe" stroke="#8250df" stroke-width="2"/>
+  <text x="410" y="366" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#6639ba">确定性回程</text>
+  <text x="410" y="390" text-anchor="middle" font-size="11" fill="#24292f">回复 = f(sessionKey 的来源路由)，</text>
+  <text x="410" y="408" text-anchor="middle" font-size="11" fill="#24292f">模型无权选渠道/会话</text>
+
+  <text x="440" y="440" text-anchor="middle" font-size="12.5" fill="#6a737d">对应真实源码：src/routing/resolve-route.ts:574 resolveAgentRoute ｜ src/routing/session-key.ts:119 toAgentStoreSessionKey ｜ docs/channels/channel-routing.md:38-70</text>
+</svg>

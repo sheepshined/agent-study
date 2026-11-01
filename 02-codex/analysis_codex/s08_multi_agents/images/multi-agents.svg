@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="530" viewBox="0 0 880 530" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+    <marker id="arrP" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#8250df"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#3d9a50"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="880" height="530" fill="#fafbfc"/>
+  <text x="440" y="32" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">多智能体：同一内核里的多条 thread —— 过程不可见，结论与活动可见</text>
+
+  <!-- 父代理 -->
+  <rect x="28" y="56" width="238" height="300" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="147" y="78" text-anchor="middle" font-size="14" font-weight="bold" fill="#2b5985">父 thread /root</text>
+  <text x="147" y="95" text-anchor="middle" font-size="10.5" fill="#6a737d">子代理 = 模型会调的工具</text>
+  <rect x="42" y="106" width="210" height="118" rx="6" fill="#ffffff" stroke="#c3d4e6"/>
+  <text x="52" y="124" font-size="11" fill="#24292f">spawn_agent(task_name, task,</text>
+  <text x="52" y="139" font-size="11" fill="#24292f">     role, fork_turns)</text>
+  <text x="52" y="156" font-size="11" fill="#2b5985">send_message(ref, msg)</text>
+  <text x="52" y="170" font-size="9.5" fill="#8b949e">    ↑ 入队，不触发新回合</text>
+  <text x="52" y="187" font-size="11" fill="#2b5985">followup_task(ref, task)</text>
+  <text x="52" y="201" font-size="9.5" fill="#8b949e">    ↑ 入队并触发回合</text>
+  <rect x="42" y="232" width="210" height="70" rx="6" fill="#f6f8fa" stroke="#c3d4e6"/>
+  <text x="52" y="250" font-size="11" fill="#24292f">wait_agent(timeout_ms) → 摘要</text>
+  <text x="52" y="266" font-size="10" fill="#2b5985">等"活动"，不等"内容"</text>
+  <text x="52" y="282" font-size="10" fill="#2b5985">终态 / 插话 / 超时 三种出口</text>
+  <rect x="42" y="310" width="210" height="34" rx="6" fill="#eefaf0" stroke="#3d9a50"/>
+  <text x="147" y="331" text-anchor="middle" font-size="10.5" fill="#2c7a3f">拿到：路径 · 活动 kind · 结论</text>
+
+  <!-- 内核 -->
+  <rect x="300" y="56" width="250" height="300" rx="10" fill="#f3eefb" stroke="#8250df" stroke-width="2"/>
+  <text x="425" y="78" text-anchor="middle" font-size="14" font-weight="bold" fill="#6639ba">内核：名册与闸</text>
+  <text x="425" y="95" text-anchor="middle" font-size="10.5" fill="#6a737d">core/src/agent/registry.rs</text>
+  <rect x="314" y="106" width="222" height="52" rx="6" fill="#ffffff" stroke="#c9b1ec"/>
+  <text x="324" y="124" font-size="10.5" fill="#24292f">AgentPath：/root · /root/alice</text>
+  <text x="324" y="140" font-size="10" fill="#6639ba">小写下划线、禁 root、禁 /（:127-143）</text>
+  <rect x="314" y="166" width="222" height="46" rx="6" fill="#fdebe8" stroke="#d4726a"/>
+  <text x="324" y="184" font-size="10.5" fill="#a83a30">深度闸 next_depth = 父+1 &gt; max?</text>
+  <text x="324" y="200" font-size="10" fill="#a83a30">DEFAULT_AGENT_MAX_DEPTH = 1（只许一层）</text>
+  <rect x="314" y="220" width="222" height="36" rx="6" fill="#fdebe8" stroke="#d4726a"/>
+  <text x="324" y="235" font-size="10.5" fill="#a83a30">并发闸 live ≥ max_concurrent → 拒</text>
+  <text x="324" y="250" font-size="9.5" fill="#a83a30">agents.max_concurrent_threads_per_session</text>
+  <rect x="314" y="264" width="222" height="46" rx="6" fill="#ffffff" stroke="#c9b1ec"/>
+  <text x="324" y="282" font-size="10.5" fill="#24292f">agent-roles/*.toml → 叠在继承 config 上</text>
+  <text x="324" y="298" font-size="10" fill="#6639ba">model / 指令 / config_file（loader.rs:78）</text>
+  <rect x="314" y="318" width="222" height="26" rx="6" fill="#eef4fb" stroke="#4a78b5"/>
+  <text x="425" y="335" text-anchor="middle" font-size="10.5" fill="#2b5985">活动总线 watch → Started / Interacted / …</text>
+
+  <!-- 子 thread -->
+  <rect x="588" y="56" width="264" height="300" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="720" y="78" text-anchor="middle" font-size="14" font-weight="bold" fill="#2c7a3f">子 thread /root/alice</text>
+  <text x="720" y="95" text-anchor="middle" font-size="10.5" fill="#6a737d">独立 history，不共享父上下文</text>
+  <rect x="602" y="106" width="236" height="40" rx="6" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="720" y="123" text-anchor="middle" font-size="10.5" fill="#24292f">mailbox（异步队列）</text>
+  <text x="720" y="138" text-anchor="middle" font-size="9.5" fill="#6a737d">消息边界吸收 · 空闲可被唤醒</text>
+  <rect x="602" y="154" width="236" height="118" rx="6" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="614" y="174" font-size="10.5" fill="#2c7a3f">run_turn（私有）：</text>
+  <text x="614" y="192" font-size="10.5" fill="#24292f"> step1 → 工具 web_search</text>
+  <text x="614" y="208" font-size="10.5" fill="#24292f"> step2 → 结论</text>
+  <text x="614" y="228" font-size="10" fill="#8b949e">每一步的 prompt / 工具结果</text>
+  <text x="614" y="244" font-size="10" fill="#8b949e">都不进父代理上下文</text>
+  <text x="614" y="262" font-size="10" fill="#a83a30">想再 spawn → 撞深度闸，报错回填</text>
+  <rect x="602" y="280" width="236" height="64" rx="6" fill="#f6f8fa" stroke="#93c9a0"/>
+  <text x="614" y="298" font-size="10.5" fill="#24292f">AgentStatus::Completed(Some(结论))</text>
+  <text x="614" y="314" font-size="10" fill="#2c7a3f">protocol.rs:1843</text>
+  <text x="614" y="332" font-size="10" fill="#2c7a3f">↑ 唯一会跨边界的东西</text>
+
+  <!-- arrows -->
+  <line x1="268" y1="150" x2="298" y2="150" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="552" y1="126" x2="598" y2="126" stroke="#3d9a50" stroke-width="2" marker-end="url(#arrG)"/>
+  <line x1="552" y1="176" x2="598" y2="176" stroke="#3d9a50" stroke-width="2" marker-end="url(#arrG)"/>
+  <path d="M720 348 L720 372 L147 372 L147 348" fill="none" stroke="#8250df" stroke-width="2" marker-end="url(#arrP)"/>
+  <text x="433" y="366" text-anchor="middle" font-size="10.5" fill="#6639ba">活动（SubAgentActivityItem：只有 kind，没有内容）+ 终态结论 → 回到父代理</text>
+
+  <rect x="28" y="394" width="824" height="66" rx="8" fill="#fdebe8" stroke="#d4726a"/>
+  <text x="440" y="415" text-anchor="middle" font-size="12" fill="#24292f">失败路径：深度超限 / 并发超限 → SpawnError 当「工具结果」回填给模型（RespondToModel，不炸内核）；</text>
+  <text x="440" y="432" text-anchor="middle" font-size="12" fill="#24292f">wait 超时 → 返回 timeout 摘要（不是异常，可以再等）；未知 agent 路径 → resolve 失败报错</text>
+  <text x="440" y="451" text-anchor="middle" font-size="10.5" fill="#a83a30">超时三档 clamp：&lt; 10s 抬到下限 ｜ &gt; 3600s 直接拒 ｜ 省略用默认 30s（config/mod.rs:239-241）</text>
+
+  <text x="440" y="493" text-anchor="middle" font-size="11.5" fill="#6a737d">mini 实现：s08_multi_agents/code.py ｜ 真实：core/src/tools/handlers/multi_agents_v2/{spawn,send_message,followup_task,wait}.rs</text>
+  <text x="440" y="511" text-anchor="middle" font-size="11" fill="#8b949e">v1 命名空间工具（multi_agent_v1.*）与 v2 plain 工具由 spec_plan.rs:645 按 MultiAgentVersion 二选一</text>
+</svg>

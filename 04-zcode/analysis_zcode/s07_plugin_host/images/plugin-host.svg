@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="400" viewBox="0 0 880 400" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="880" height="400" fill="#fafbfc"/>
+  <text x="440" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">插件独立进程：plugin-host 与白名单变量展开</text>
+
+  <!-- process model -->
+  <rect x="40" y="56" width="250" height="150" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="165" y="82" text-anchor="middle" font-size="14" font-weight="bold" fill="#2b5985">main.ts 入口顺序</text>
+  <g font-size="11.5" font-family="Consolas, monospace" fill="#24292f">
+    <text x="60" y="108">1 清洗注入 env（NODE_ENV…）</text>
+    <text x="60" y="130">2 protocol/TUI: console→stderr</text>
+    <text x="60" y="152" fill="#b35900">3 plugin-host 短路 ★</text>
+    <text x="60" y="174">4 才 import 整套 Agent</text>
+  </g>
+  <text x="165" y="196" text-anchor="middle" font-size="10.5" fill="#2b5985">只跑插件 MCP server？不装 23 万行内核</text>
+
+  <!-- plugin host process -->
+  <rect x="320" y="56" width="250" height="150" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="445" y="82" text-anchor="middle" font-size="14" font-weight="bold" fill="#2c7a3f">plugin-host 进程</text>
+  <g font-size="11.5" fill="#24292f">
+    <text x="340" y="108">· 拉起 plugin 的 server 入口</text>
+    <text x="340" y="130">· 三重校验后才 import()：</text>
+    <text x="352" y="152">plugin id + 凭据组 + socket</text>
+    <text x="340" y="178" fill="#a83a32">· broker token 不裸躺在 env</text>
+  </g>
+  <text x="445" y="196" text-anchor="middle" font-size="10.5" fill="#2c7a3f">崩溃 → 退出码非 0，内核不连坐</text>
+
+  <!-- kernel -->
+  <rect x="600" y="56" width="240" height="150" rx="10" fill="#f3eefe" stroke="#8250df" stroke-width="2"/>
+  <text x="720" y="82" text-anchor="middle" font-size="14" font-weight="bold" fill="#6639ba">agent 内核进程</text>
+  <g font-size="11.5" fill="#24292f">
+    <text x="620" y="108">· 三层循环 / 权限 / 工具</text>
+    <text x="620" y="130">· 经 stdio 与插件 server 通信</text>
+    <text x="620" y="152">· MCP 工具命名 mcp__server__tool</text>
+  </g>
+  <text x="720" y="196" text-anchor="middle" font-size="10.5" fill="#6639ba">没有 OS 沙箱（NOTICE.md:9）→</text>
+  <text x="720" y="178" text-anchor="middle" font-size="10.5" fill="#6639ba">进程边界就是最后的隔离</text>
+
+  <line x1="290" y1="131" x2="314" y2="131" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="570" y1="131" x2="594" y2="131" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- variable whitelist -->
+  <rect x="40" y="226" width="800" height="100" rx="10" fill="#fdf6ec" stroke="#c98a2b" stroke-width="2"/>
+  <text x="62" y="252" font-size="13.5" font-weight="bold" fill="#8a5a12">变量展开白名单（apps/zcode-cli/README.md:114-122）</text>
+  <g font-size="12" font-family="Consolas, monospace" fill="#24292f">
+    <text x="62" y="278">✓ ${ZCODE_PLUGIN_ROOT}  ✓ ${ZCODE_PLUGIN_DATA}  ✓ ${ZCODE_PROJECT_DIR}  ✓ ${ZCODE_MAX_TURNS}（ZCODE_ 前缀 env）</text>
+    <text x="62" y="304" fill="#a83a32">✗ ${PATH}  ✗ ${HOME}  ✗ ${AWS_SECRET} —— 白名单外原样保留：不展开 = 不泄漏</text>
+  </g>
+
+  <!-- install states -->
+  <rect x="40" y="342" width="800" height="42" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="1.5"/>
+  <text x="440" y="368" text-anchor="middle" font-size="12" fill="#2b5985">安装态编目：~/.zcode/cli/plugins/{cache, data, marketplaces}｜商店 id 固定 zcode-plugins-official（CONTEXT.md:10）｜Restorable Builtin / Orphaned Plugin（:75-81）</text>
+
+  <text x="440" y="398" text-anchor="middle" font-size="13" fill="#6a737d" opacity="0"> </text>
+</svg>

@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="510" viewBox="0 0 880 510" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#3d9a50"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="880" height="510" fill="#fafbfc"/>
+  <text x="440" y="32" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">apply_patch：补丁文本 → 三级定位 → 有序应用（一次调用改 N 处）</text>
+
+  <!-- ① 协议面 -->
+  <rect x="30" y="58" width="250" height="330" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="155" y="82" text-anchor="middle" font-size="14" font-weight="bold" fill="#2b5985">① 补丁文本（模型输出）</text>
+  <text x="155" y="100" text-anchor="middle" font-size="10.5" fill="#6a737d">freeform 工具，不是 JSON</text>
+  <rect x="44" y="112" width="222" height="256" rx="6" fill="#ffffff" stroke="#c3d4e6"/>
+  <text x="54" y="132" font-size="11" fill="#57606a">*** Begin Patch</text>
+  <text x="54" y="150" font-size="11" fill="#2b5985">*** Add File: p1</text>
+  <text x="54" y="166" font-size="11" fill="#2c7a3f">+新文件的每一行</text>
+  <text x="54" y="186" font-size="11" fill="#2b5985">*** Update File: login.py</text>
+  <text x="54" y="202" font-size="11" fill="#8250df">@@ def check(token):</text>
+  <text x="54" y="216" font-size="9.5" fill="#8b949e">   ↑ change_context 只有一行</text>
+  <text x="54" y="232" font-size="11" fill="#a83a30">-    return bool(token)</text>
+  <text x="54" y="248" font-size="11" fill="#2c7a3f">+    return token is not None</text>
+  <text x="54" y="264" font-size="11" fill="#8250df">@@ def login(user):</text>
+  <text x="54" y="280" font-size="11" fill="#a83a30">-    ...</text>
+  <text x="54" y="294" font-size="11" fill="#2c7a3f">+    ...</text>
+  <text x="54" y="314" font-size="11" fill="#2b5985">*** Move to: new.py ｜ *** End of File</text>
+  <text x="54" y="330" font-size="11" fill="#2b5985">*** Delete File: legacy.py</text>
+  <text x="54" y="348" font-size="11" fill="#57606a">*** End Patch</text>
+  <text x="155" y="378" text-anchor="middle" font-size="10.5" fill="#2b5985">Update File = 有序 chunk 列表</text>
+
+  <!-- ② 定位面 -->
+  <rect x="305" y="58" width="250" height="330" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="430" y="82" text-anchor="middle" font-size="14" font-weight="bold" fill="#2c7a3f">② seek_sequence 三级漏斗</text>
+  <text x="430" y="100" text-anchor="middle" font-size="10.5" fill="#6a737d">从游标 start 往后搜</text>
+  <rect x="330" y="116" width="200" height="46" rx="8" fill="#ffffff" stroke="#3d9a50"/>
+  <text x="430" y="136" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#24292f">1 精确匹配</text>
+  <text x="430" y="152" text-anchor="middle" font-size="10" fill="#6a737d">逐行 ==，最快最严</text>
+  <rect x="340" y="176" width="180" height="46" rx="8" fill="#ffffff" stroke="#7cc48a"/>
+  <text x="430" y="196" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#24292f">2 忽略行尾空白</text>
+  <text x="430" y="212" text-anchor="middle" font-size="10" fill="#6a737d">rstrip</text>
+  <rect x="350" y="236" width="160" height="46" rx="8" fill="#ffffff" stroke="#7cc48a"/>
+  <text x="430" y="256" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#24292f">3 忽略首尾空白</text>
+  <text x="430" y="272" text-anchor="middle" font-size="10" fill="#6a737d">strip：缩进漂移在此兜住</text>
+  <rect x="345" y="300" width="170" height="40" rx="8" fill="#fdebe8" stroke="#d4726a"/>
+  <text x="430" y="318" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#a83a30">None → 报错</text>
+  <text x="430" y="333" text-anchor="middle" font-size="10" fill="#a83a30">没有第四级"相似度打分"</text>
+  <text x="430" y="360" text-anchor="middle" font-size="10.5" fill="#2c7a3f">eof=true：先从文件尾往前试</text>
+  <text x="430" y="378" text-anchor="middle" font-size="10.5" fill="#2c7a3f">pattern 比文件长 → None（防越界）</text>
+
+  <!-- ③ 应用面 -->
+  <rect x="580" y="58" width="270" height="330" rx="10" fill="#f3eefb" stroke="#8250df" stroke-width="2"/>
+  <text x="715" y="82" text-anchor="middle" font-size="14" font-weight="bold" fill="#6639ba">③ 有序应用（单调游标）</text>
+  <text x="715" y="100" text-anchor="middle" font-size="10.5" fill="#6a737d">derive_new_contents_from_chunks</text>
+  <rect x="598" y="114" width="234" height="150" rx="6" fill="#ffffff" stroke="#c9b1ec"/>
+  <text x="608" y="132" font-size="10.5" fill="#57606a">1  import sys</text>
+  <text x="608" y="150" font-size="10.5" fill="#57606a">7  def check(token):   ← chunk1 锚</text>
+  <text x="608" y="166" font-size="10.5" fill="#2c7a3f">8      return …        ← chunk1 改这里</text>
+  <text x="608" y="182" font-size="10.5" fill="#6639ba">     cursor ↓ 9</text>
+  <text x="608" y="198" font-size="10.5" fill="#57606a">11 def check(token):  ← chunk2 锚（≥9）</text>
+  <text x="608" y="214" font-size="10.5" fill="#2c7a3f">12     return …       ← chunk2 改这里</text>
+  <text x="608" y="238" font-size="10" fill="#8b949e">两处同名锚，靠"游标只往前走"分辨</text>
+  <rect x="598" y="252" width="234" height="60" rx="6" fill="#f6f8fa" stroke="#c9b1ec"/>
+  <text x="615" y="272" font-size="10.5" fill="#6639ba">产物：新文件内容 + unified_diff</text>
+  <text x="615" y="288" font-size="10.5" fill="#6639ba">diff 供 UI 渲染、人审、写入 rollout</text>
+  <text x="615" y="304" font-size="10.5" fill="#6639ba">（s02 的录制、s03 的总闸都吃这份）</text>
+  <rect x="598" y="322" width="234" height="52" rx="6" fill="#eefaf0" stroke="#3d9a50"/>
+  <text x="615" y="342" font-size="10.5" fill="#2c7a3f">再放大一步 = code mode：</text>
+  <text x="615" y="358" font-size="10.5" fill="#2c7a3f">一批工具调用 → 一段脚本</text>
+  <text x="715" y="376" text-anchor="middle" font-size="10" fill="#6a737d">HostHello 握手暴露能力</text>
+
+  <!-- arrows -->
+  <line x1="282" y1="220" x2="302" y2="220" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="557" y1="220" x2="577" y2="220" stroke="#3d9a50" stroke-width="2" marker-end="url(#arrG)"/>
+
+  <rect x="30" y="404" width="820" height="52" rx="8" fill="#fdebe8" stroke="#d4726a"/>
+  <text x="440" y="425" text-anchor="middle" font-size="12" fill="#24292f">失败路径：锚找不到 → ParseError/PatchError 带行号回给模型，让它重写补丁；整块事务不静默错位</text>
+  <text x="440" y="443" text-anchor="middle" font-size="11" fill="#a83a30">三笔账：省往返（1 次调用改 N 处）· 可展示（天然 diff）· 可靠（位置锚 + 顺序 + 明确失败）</text>
+
+  <text x="440" y="482" text-anchor="middle" font-size="11.5" fill="#6a737d">mini 实现：s07_apply_patch/code.py ｜ 真实：apply-patch/src/{parser.rs:66·115·145 · seek_sequence.rs:12 · file_update.rs:26·256}</text>
+</svg>

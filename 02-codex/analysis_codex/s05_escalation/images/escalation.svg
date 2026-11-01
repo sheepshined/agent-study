@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="480" viewBox="0 0 860 480" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="860" height="480" fill="#fafbfc"/>
+  <text x="430" y="34" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">升级重试（escalation）：沙箱拒绝之后的决策链</text>
+
+  <!-- attempt 1 -->
+  <rect x="60" y="66" width="250" height="120" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="185" y="94" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#2b5985">attempt#1（沙箱内）</text>
+  <text x="185" y="118" text-anchor="middle" font-size="12.5" fill="#24292f">同一命令 · 同一参数</text>
+  <text x="185" y="140" text-anchor="middle" font-size="12.5" fill="#2c7a3f">成功 → 直接返回结果</text>
+  <text x="185" y="166" text-anchor="middle" font-size="12.5" fill="#a83a30">被拒 → SandboxErr::Denied :352</text>
+
+  <!-- branch error -->
+  <rect x="60" y="216" width="250" height="74" rx="8" fill="#fdebe8" stroke="#d4726a"/>
+  <text x="185" y="242" text-anchor="middle" font-size="12.5" fill="#24292f">命令自身报错（ToolError）？</text>
+  <text x="185" y="262" text-anchor="middle" font-size="12" fill="#a83a30">不重试，直接回模型——</text>
+  <text x="185" y="280" text-anchor="middle" font-size="12" fill="#a83a30">失败归因必须是"策略挡了"</text>
+
+  <!-- gates -->
+  <rect x="370" y="60" width="230" height="200" rx="10" fill="#fff9f0" stroke="#d9a03c" stroke-width="2"/>
+  <text x="485" y="86" text-anchor="middle" font-size="14" font-weight="bold" fill="#b35900">升级三道门（orchestrator.rs）</text>
+  <rect x="388" y="100" width="194" height="42" rx="6" fill="#ffffff" stroke="#e3c28a"/>
+  <text x="485" y="117" text-anchor="middle" font-size="12" fill="#24292f">门1 工具声明 escalate_on_failure</text>
+  <text x="485" y="134" text-anchor="middle" font-size="10.5" fill="#6a737d">false → 不重试（:376）</text>
+  <rect x="388" y="148" width="194" height="42" rx="6" fill="#ffffff" stroke="#e3c28a"/>
+  <text x="485" y="165" text-anchor="middle" font-size="12" fill="#24292f">门2 审批策略 Never/OnRequest</text>
+  <text x="485" y="182" text-anchor="middle" font-size="10.5" fill="#6a737d">不出沙箱重跑（:389）</text>
+  <rect x="388" y="196" width="194" height="42" rx="6" fill="#ffffff" stroke="#e3c28a"/>
+  <text x="485" y="213" text-anchor="middle" font-size="12" fill="#24292f">门3 denied-read 存在</text>
+  <text x="485" y="230" text-anchor="middle" font-size="10.5" fill="#6a737d">禁止裸跑 → 沙箱内重试（:275）</text>
+
+  <!-- approval -->
+  <rect x="640" y="66" width="180" height="110" rx="10" fill="#f3eefb" stroke="#8250df" stroke-width="2"/>
+  <text x="730" y="94" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#6639ba">升级审批（问一次）</text>
+  <text x="730" y="118" text-anchor="middle" font-size="12" fill="#24292f">用户批准 → 进缓存</text>
+  <text x="730" y="140" text-anchor="middle" font-size="12" fill="#24292f">第二次同类升级免弹窗</text>
+  <text x="730" y="162" text-anchor="middle" font-size="10.5" fill="#6639ba">no re-approval thanks to caching</text>
+
+  <!-- attempt 2 -->
+  <rect x="560" y="216" width="260" height="110" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="690" y="244" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#2c7a3f">attempt#2（原样重跑）</text>
+  <text x="690" y="268" text-anchor="middle" font-size="12.5" fill="#24292f">同命令 · 同参数 · 只换沙箱档位</text>
+  <text x="690" y="290" text-anchor="middle" font-size="12.5" fill="#2c7a3f">成功 → 结果回填，遥测记 escalated</text>
+  <text x="690" y="312" text-anchor="middle" font-size="12" fill="#6a737d">失败（命令错）→ 回模型，不无限重试</text>
+
+  <!-- arrows -->
+  <line x1="310" y1="150" x2="365" y2="140" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="310" y1="120" x2="310" y2="212" stroke="#5a6b7b" stroke-width="0"/>
+  <path d="M 185 186 L 185 212" fill="none" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="600" y1="140" x2="635" y2="130" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="690" y1="176" x2="690" y2="212" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="745" y="196" text-anchor="middle" font-size="11" fill="#6a737d">门全过</text>
+
+  <!-- invariant box -->
+  <rect x="60" y="340" width="760" height="96" rx="10" fill="#f6f8fa" stroke="#c9d4de"/>
+  <text x="440" y="366" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#24292f">三条不变量</text>
+  <text x="440" y="390" text-anchor="middle" font-size="12.5" fill="#24292f">① 只有沙箱拒绝（SandboxErr::Denied）才触发升级；命令报错不重试</text>
+  <text x="440" y="410" text-anchor="middle" font-size="12.5" fill="#24292f">② 升级的只是沙箱档位——命令、参数、审批缓存全不变 ③ 拒读约束高于升级请求</text>
+  <text x="440" y="428" text-anchor="middle" font-size="11" fill="#6a737d">mini 实现：s05_escalation/code.py ｜ 行号以当前检出为准，上游会漂移</text>
+</svg>

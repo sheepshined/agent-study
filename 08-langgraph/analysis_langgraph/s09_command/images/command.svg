@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="540" viewBox="0 0 880 540" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+    <marker id="arrP" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#8250df"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#d4726a"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="880" height="540" fill="#fafbfc"/>
+  <text x="440" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">Command：一次说完「改状态 + 去哪儿 + 拿什么继续」——新语法，没有新引擎</text>
+
+  <!-- Command 四格 -->
+  <rect x="24" y="50" width="200" height="150" rx="10" fill="#f3eefb" stroke="#8250df" stroke-width="2"/>
+  <text x="124" y="72" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#6639ba">Command（types.py:827）</text>
+  <text x="36" y="94" font-size="10.5" fill="#24292f">graph = None | PARENT（:849/:876）</text>
+  <text x="36" y="112" font-size="10.5" fill="#24292f">update = 增量（:850）</text>
+  <text x="36" y="130" font-size="10.5" fill="#24292f">resume = 恢复值（:851）</text>
+  <text x="36" y="148" font-size="10.5" fill="#24292f">goto = 名字 | Send | 序列（:852）</text>
+  <text x="36" y="170" font-size="10" fill="#6639ba">还是 ToolOutputMixin：工具也能返回</text>
+  <text x="36" y="186" font-size="10" fill="#8b949e">（prebuilt/tool_node.py:657-660）</text>
+
+  <!-- 路径①：节点返回 -->
+  <rect x="248" y="50" width="300" height="150" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="398" y="72" text-anchor="middle" font-size="13" font-weight="bold" fill="#2c7a3f">路径① 节点返回 → 拆成两笔写入</text>
+  <rect x="262" y="84" width="272" height="46" rx="6" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="272" y="102" font-size="10.5" fill="#24292f">update → _get_updates（state.py:1477）</text>
+  <text x="272" y="120" font-size="10" fill="#2c7a3f">graph==PARENT → 不回写本图（:1478）</text>
+  <rect x="262" y="138" width="272" height="52" rx="6" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="272" y="156" font-size="10.5" fill="#24292f">goto → _control_branch（state.py:1763）</text>
+  <text x="272" y="172" font-size="10" fill="#24292f">字符串 → branch:to:{node}（模板 :110）</text>
+  <text x="272" y="186" font-size="10" fill="#24292f">Send → (TASKS, send) = s08 的 push</text>
+
+  <!-- 路径②：图输入 -->
+  <rect x="572" y="50" width="284" height="150" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="714" y="72" text-anchor="middle" font-size="13" font-weight="bold" fill="#2b5985">路径② 图输入 → map_command（_io.py:56）</text>
+  <text x="584" y="94" font-size="10.5" fill="#24292f">goto 字符串 → (NULL, "branch:to:X", START) :69</text>
+  <text x="584" y="112" font-size="10.5" fill="#24292f">goto Send → (NULL, TASKS, send) :67</text>
+  <text x="584" y="130" font-size="10.5" fill="#24292f">resume → (NULL, RESUME, value) :75</text>
+  <text x="584" y="148" font-size="10.5" fill="#24292f">update → (NULL, k, v) :77-78</text>
+  <text x="584" y="172" font-size="10" fill="#2b5985">所以 Command 既是节点返回值，也是图入参</text>
+  <text x="584" y="188" font-size="10" fill="#a83a30">NULL 任务的写入会被累加（_loop.py:434）</text>
+
+  <!-- 路径③：interrupt/resume -->
+  <rect x="24" y="218" width="360" height="130" rx="10" fill="#fff8e6" stroke="#d8a72c" stroke-width="2"/>
+  <text x="204" y="240" text-anchor="middle" font-size="13" font-weight="bold" fill="#8a6414">路径③ resume 交接：挂起 → 恢复 → 从头重跑</text>
+  <line x1="50" y1="286" x2="356" y2="286" stroke="#d8a72c" stroke-width="1.5"/>
+  <text x="60" y="278" font-size="10" fill="#24292f">invoke({"x":1})</text>
+  <text x="60" y="300" font-size="10" fill="#8a6414">节点进入 #1</text>
+  <text x="170" y="278" font-size="10" fill="#a83a30">interrupt() → GraphInterrupt</text>
+  <text x="170" y="300" font-size="10" fill="#24292f">状态存档（s04）</text>
+  <text x="278" y="278" font-size="10" fill="#2b5985">Command(resume=…)</text>
+  <text x="278" y="300" font-size="10" fill="#8a6414">节点进入 #2（重跑）</text>
+  <text x="44" y="326" font-size="10.5" fill="#24292f">一个节点里多次 interrupt：按出现顺序配对（types.py:1006-1018），</text>
+  <text x="44" y="342" font-size="10.5" fill="#24292f">恢复值可读一次即消费（_algo.py:1332 get_null_resume(consume=True)）</text>
+
+  <!-- PARENT 冒泡 -->
+  <rect x="400" y="218" width="456" height="130" rx="10" fill="#ffffff" stroke="#8250df" stroke-width="2"/>
+  <text x="628" y="240" text-anchor="middle" font-size="13" font-weight="bold" fill="#6639ba">graph=PARENT：跨层交接（多 agent 的语法）</text>
+  <rect x="416" y="254" width="200" height="80" rx="8" fill="#eefaf0" stroke="#93c9a0"/>
+  <text x="516" y="272" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#2c7a3f">父图（supervisor）</text>
+  <text x="516" y="290" text-anchor="middle" font-size="10" fill="#24292f">节点 agent1 ▸ 内含子图</text>
+  <text x="516" y="306" text-anchor="middle" font-size="10" fill="#24292f">节点 sibling</text>
+  <text x="516" y="322" text-anchor="middle" font-size="10" fill="#6639ba">branch:to:sibling ← 落地</text>
+  <rect x="640" y="258" width="200" height="72" rx="8" fill="#f6f8fa" stroke="#c9b1ec"/>
+  <text x="740" y="276" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#6639ba">子图 agent1</text>
+  <text x="740" y="294" text-anchor="middle" font-size="10" fill="#24292f">worker 返回</text>
+  <text x="740" y="310" text-anchor="middle" font-size="10" fill="#24292f">Command(goto="sibling",</text>
+  <text x="740" y="324" text-anchor="middle" font-size="10" fill="#24292f">graph=Command.PARENT)</text>
+  <path d="M640 300 L616 300" fill="none" stroke="#d4726a" stroke-width="2" marker-end="url(#arrR)"/>
+  <text x="628" y="352" text-anchor="middle" font-size="9.5" fill="#a83a30">raise ParentCommand（state.py:1776）→ 冒泡到父引擎（_retry.py:618-629 判归属并改写 namespace）</text>
+
+  <rect x="24" y="360" width="832" height="66" rx="8" fill="#fdebe8" stroke="#d4726a"/>
+  <text x="440" y="381" text-anchor="middle" font-size="11.5" fill="#24292f">失败路径：图输入带 graph=PARENT → InvalidUpdateError("There is no parent graph")（_io.py:58-59）；</text>
+  <text x="440" y="398" text-anchor="middle" font-size="11.5" fill="#24292f">同一超步对 LastValue 键写两次 → InvalidUpdateError（s03 的规则不因 Command 而豁免）；</text>
+  <text x="440" y="416" text-anchor="middle" font-size="10.5" fill="#a83a30">goto 目标不是本图节点 → ParentCommand 继续上抛；一路到根还没人接 → 抛给调用方</text>
+
+  <rect x="24" y="438" width="832" height="46" rx="8" fill="#eef4fb" stroke="#4a78b5"/>
+  <text x="440" y="458" text-anchor="middle" font-size="11" fill="#2b5985">一句话：Command 的四格各自落到 s01-s08 已有机制上——update→通道写入、goto→branch:to 或 TASKS、resume→NULL 任务的 RESUME、PARENT→冒泡</text>
+  <text x="440" y="476" text-anchor="middle" font-size="10.5" fill="#24292f">多条工具级 PARENT+Send 命令会被并成一条（tool_node.py:864-913）：一次交接，而不是两次</text>
+
+  <text x="440" y="510" text-anchor="middle" font-size="11.5" fill="#6a737d">mini 实现：s09_command/code.py（六个场景）｜ 真实：types.py:827-876 · graph/state.py:110/1477/1763 · pregel/_io.py:56-78 · pregel/_retry.py:618-629 · errors.py:129</text>
+</svg>

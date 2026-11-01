@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="470" viewBox="0 0 880 470" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="880" height="470" fill="#fafbfc"/>
+  <text x="440" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">s06 无人值守输入源：cron / webhook / 语音唤醒</text>
+
+  <!-- cron -->
+  <rect x="28" y="70" width="250" height="150" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="153" y="98" text-anchor="middle" font-size="14" font-weight="bold" fill="#2b5985">① cron（定时任务）</text>
+  <g font-size="11.5" fill="#24292f">
+    <text x="44" y="126">调度器持久化 job，到点唤醒 agent</text>
+    <text x="44" y="150">输出可投递：渠道 / webhook / 不投</text>
+    <text x="44" y="176">lanes：cron → 内层改派 cron-nested</text>
+    <text x="44" y="198" fill="#8a5a12">身份 = job 配置本身（管理员所配）</text>
+  </g>
+
+  <!-- webhook -->
+  <rect x="315" y="70" width="250" height="150" rx="10" fill="#fdf6ec" stroke="#c98a2b" stroke-width="2"/>
+  <text x="440" y="98" text-anchor="middle" font-size="14" font-weight="bold" fill="#8a5a12">② webhook（网络钩子）</text>
+  <g font-size="11.5" fill="#24292f">
+    <text x="331" y="126">外部系统 HTTP POST → /hooks</text>
+    <text x="331" y="150">鉴权失败限流 20/60s + 60s 锁定（不可配）</text>
+    <text x="331" y="176">签名校验 → 归一化 → dispatch</text>
+    <text x="331" y="198" fill="#8a5a12">身份 = 共享密钥/签名（外部系统所持）</text>
+  </g>
+
+  <!-- voicewake -->
+  <rect x="602" y="70" width="250" height="150" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="727" y="98" text-anchor="middle" font-size="14" font-weight="bold" fill="#2c7a3f">③ 语音唤醒（voicewake）</text>
+  <g font-size="11.5" fill="#24292f">
+    <text x="618" y="126">唤醒词表全局唯一，Gateway 拥有</text>
+    <text x="618" y="150">存 config_machine_state.voicewake</text>
+    <text x="618" y="172">≤32 条 × 64 UTF-16，端侧本地识别</text>
+    <text x="618" y="194" fill="#8a5a12">身份 = 配对设备（s10 的签名配对）</text>
+  </g>
+
+  <!-- converge -->
+  <rect x="28" y="266" width="824" height="96" rx="10" fill="#f3eefe" stroke="#8250df" stroke-width="2"/>
+  <text x="440" y="294" text-anchor="middle" font-size="14" font-weight="bold" fill="#6639ba">汇入同一个 dispatch：身份随输入自带，权限在 admission 裁决</text>
+  <g font-size="12" fill="#24292f">
+    <text x="60" y="322">cron job → sessionKey（可钉 main）→ lane=cron → agentCommand（skills 快照、model 解析）→ run（超时 48h 预算）</text>
+    <text x="60" y="346">webhook → 鉴权 → sessionKey → agent RPC {runId, acceptedAt} 立即受理 → 排队执行（s03）</text>
+  </g>
+  <line x1="153" y1="220" x2="153" y2="260" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="440" y1="220" x2="440" y2="260" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="727" y1="220" x2="727" y2="260" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <rect x="28" y="386" width="824" height="42" rx="8" fill="#fff3f3" stroke="#d29922" stroke-dasharray="4 3"/>
+  <text x="440" y="412" text-anchor="middle" font-size="12" fill="#8a5a12">对比 coding CLI：输入 = 人在终端敲 prompt（有键盘就有兜底）；OpenClaw：输入 = 时间、外部系统、声音——身份与预算必须随输入自带</text>
+
+  <text x="440" y="456" text-anchor="middle" font-size="12" fill="#6a737d">对应真实源码：src/cron/（调度器+job 绑定）｜ src/agents/tools/cron-tool.ts:222 ｜ src/gateway/server/hooks.ts:235/:737 ｜ docs/nodes/voicewake.md ｜ apps/swabble</text>
+</svg>

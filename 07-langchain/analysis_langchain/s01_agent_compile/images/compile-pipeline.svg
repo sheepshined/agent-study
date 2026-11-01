@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="870" height="470" viewBox="0 0 870 470" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="870" height="470" fill="#fafbfc"/>
+  <text x="435" y="34" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">mini create_agent：声明式配置 → 编译 → 可运行的图</text>
+
+  <!-- spec -->
+  <rect x="45" y="70" width="240" height="170" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="165" y="98" text-anchor="middle" font-size="16" font-weight="bold" fill="#2b5985">AgentSpec（声明式配置）</text>
+  <text x="165" y="126" text-anchor="middle" font-size="13" fill="#24292f">model_name = "mock-gpt"</text>
+  <text x="165" y="148" text-anchor="middle" font-size="13" fill="#24292f">system_prompt = "你是天气助手"</text>
+  <text x="165" y="170" text-anchor="middle" font-size="13" fill="#24292f">tools = [get_weather]</text>
+  <text x="165" y="200" text-anchor="middle" font-size="12" fill="#6a737d">只有事实陈述</text>
+  <text x="165" y="220" text-anchor="middle" font-size="12" fill="#6a737d">没有 while / if 流程代码</text>
+
+  <!-- compiler -->
+  <rect x="345" y="70" width="200" height="170" rx="10" fill="#fff8e6" stroke="#bd8a00" stroke-width="2"/>
+  <text x="445" y="98" text-anchor="middle" font-size="16" font-weight="bold" fill="#8a6500">compile_agent()</text>
+  <text x="445" y="126" text-anchor="middle" font-size="13" fill="#24292f">1. 校验：模型已注册？</text>
+  <text x="445" y="148" text-anchor="middle" font-size="13" fill="#24292f">2. 校验：工具不重名？</text>
+  <text x="445" y="170" text-anchor="middle" font-size="13" fill="#24292f">3. 装配：节点 + 边</text>
+  <text x="445" y="192" text-anchor="middle" font-size="13" fill="#24292f">4. 产出装配报告</text>
+  <text x="445" y="220" text-anchor="middle" font-size="12" fill="#b35900">错误在编译期 fail-fast</text>
+
+  <!-- compiled graph -->
+  <rect x="605" y="70" width="235" height="170" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="722" y="98" text-anchor="middle" font-size="16" font-weight="bold" fill="#2c7a3f">CompiledAgent（可运行）</text>
+  <rect x="625" y="118" width="90" height="42" rx="6" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="670" y="144" text-anchor="middle" font-size="13" fill="#24292f">model 节点</text>
+  <rect x="735" y="118" width="90" height="42" rx="6" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="780" y="144" text-anchor="middle" font-size="13" fill="#24292f">tools 节点</text>
+  <line x1="715" y1="139" x2="730" y2="139" stroke="#5a6b7b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <path d="M 780 160 C 780 195 670 195 670 165" fill="none" stroke="#8250df" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arr)"/>
+  <text x="722" y="208" text-anchor="middle" font-size="12" fill="#8250df">环：结果回填后再问模型</text>
+  <text x="722" y="230" text-anchor="middle" font-size="12" fill="#6a737d">invoke() 沿环走直到出环</text>
+
+  <!-- arrows between stages -->
+  <line x1="285" y1="155" x2="340" y2="155" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="312" y="145" text-anchor="middle" font-size="13" fill="#24292f">编译</text>
+  <line x1="545" y1="155" x2="600" y2="155" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="572" y="145" text-anchor="middle" font-size="13" fill="#24292f">产出</text>
+
+  <!-- runtime trace -->
+  <rect x="45" y="280" width="795" height="150" rx="10" fill="#f6f8fa" stroke="#c9d4de" stroke-dasharray="4 3"/>
+  <text x="442" y="308" text-anchor="middle" font-size="15" font-weight="bold" fill="#24292f">一次 invoke 的环上轨迹（场景 2 的真实输出）</text>
+  <text x="442" y="338" text-anchor="middle" font-size="13" fill="#24292f">START → model（要点工具 get_weather）→ tools（执行：北京晴 26°C）→ model（综合成答案）→ END</text>
+  <text x="442" y="366" text-anchor="middle" font-size="13" fill="#24292f">模型被调用 2 次：第 1 次发起工具调用，第 2 次不带 tool_calls 直接收尾</text>
+  <text x="442" y="396" text-anchor="middle" font-size="12.5" fill="#b35900">守卫：max_iterations（对应 recursion_limit，默认 25）——模型永不收尾时强制出环</text>
+  <text x="442" y="418" text-anchor="middle" font-size="12.5" fill="#6a737d">对应真实源码：factory.py:1623/1627（两节点）、:1770/:1790（两条件边）、:1926（compile 出口）</text>
+</svg>

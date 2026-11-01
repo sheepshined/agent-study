@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="420" viewBox="0 0 880 420" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="880" height="420" fill="#fafbfc"/>
+  <text x="440" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">dynamic workflow 信任链：模型写 TS → 静态分析 → vm realm</text>
+
+  <!-- stage 1 model writes -->
+  <rect x="40" y="56" width="180" height="120" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="130" y="82" text-anchor="middle" font-size="14" font-weight="bold" fill="#2b5985">① 模型写脚本</text>
+  <text x="130" y="106" text-anchor="middle" font-size="11.5" fill="#24292f">对齐 facade .d.ts</text>
+  <text x="130" y="128" text-anchor="middle" font-size="11.5" fill="#24292f">（嵌入字符串资产，</text>
+  <text x="130" y="150" text-anchor="middle" font-size="11.5" fill="#24292f">模型可见 API 唯一事实源）</text>
+
+  <!-- stage 2 static -->
+  <rect x="250" y="56" width="180" height="120" rx="10" fill="#fdf6ec" stroke="#c98a2b" stroke-width="2"/>
+  <text x="340" y="82" text-anchor="middle" font-size="14" font-weight="bold" fill="#8a5a12">② 静态守门</text>
+  <g font-size="11" fill="#24292f">
+    <text x="262" y="106">typecheck（虚拟宿主）</text>
+    <text x="262" y="126">禁词：require/process/import(</text>
+    <text x="262" y="146">死循环：无界 while</text>
+    <text x="262" y="166">站点收集：ask/actor/world/join</text>
+  </g>
+
+  <!-- stage 3 taint -->
+  <rect x="460" y="56" width="180" height="120" rx="10" fill="#fff3f3" stroke="#c9524a" stroke-width="2"/>
+  <text x="550" y="82" text-anchor="middle" font-size="14" font-weight="bold" fill="#a83a32">③ taint 不动点</text>
+  <g font-size="11" fill="#24292f">
+    <text x="472" y="106">world.run 产出 → 标脏</text>
+    <text x="472" y="126">沿赋值传播（AbstractValue）</text>
+    <text x="472" y="146">脏值进 agent.ask 参数 → 违例</text>
+    <text x="472" y="166">循环到不动点 → 时序遍历</text>
+  </g>
+
+  <!-- stage 4 realm -->
+  <rect x="670" y="56" width="170" height="120" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="755" y="82" text-anchor="middle" font-size="14" font-weight="bold" fill="#2c7a3f">④ vm 独立 realm</text>
+  <g font-size="11" fill="#24292f">
+    <text x="682" y="106">vm.createContext({__host})</text>
+    <text x="682" y="126">无 process/require/Buffer</text>
+    <text x="682" y="146">import() 抛 ERR_VM_…</text>
+    <text x="682" y="166">子进程 + NDJSON 桥</text>
+  </g>
+
+  <line x1="220" y1="116" x2="244" y2="116" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="430" y1="116" x2="454" y2="116" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="640" y1="116" x2="664" y2="116" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- journal -->
+  <rect x="40" y="200" width="800" height="120" rx="10" fill="#f3eefe" stroke="#8250df" stroke-width="2"/>
+  <text x="62" y="226" font-size="13.5" font-weight="bold" fill="#6639ba">⑤ journal 落库（migrations.ts 0019_dwf_journal :799：dwf_run / dwf_actor / dwf_node / dwf_event）</text>
+  <g font-size="11.5" font-family="Consolas, monospace" fill="#24292f">
+    <text x="62" y="252">dwf_event 按 sequence 分页 —— "看板取数按 journal sequence 分页，取数源是 dwf_event 而不是 dwf_node"（:828 注释）</text>
+    <text x="62" y="274">崩溃 → 从 journal 重放：失败是节点态，不是进程态</text>
+    <text x="62" y="298" fill="#6639ba">四层隔离：静态守门 + taint 违例 + realm 缺失物 + 子进程边界 —— 缺一不可</text>
+  </g>
+
+  <!-- why -->
+  <rect x="40" y="340" width="800" height="52" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="1.5"/>
+  <text x="440" y="362" text-anchor="middle" font-size="12" font-weight="bold" fill="#2b5985">为什么"写程序"比"再派一个子代理"强：控制流静态可分析（能证明可并发）；</text>
+  <text x="440" y="382" text-anchor="middle" font-size="12" font-weight="bold" fill="#2b5985">比"给模型一个 shell"强：能力面被 facade 钉死 —— .d.ts 里没有的能力模型写不出来</text>
+</svg>

@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="420" viewBox="0 0 880 420" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="880" height="420" fill="#fafbfc"/>
+  <text x="440" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">ZCode 三层循环：turn → provider-turn 循环 → model step</text>
+
+  <!-- layer 1 turn -->
+  <rect x="40" y="58" width="800" height="92" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="62" y="84" font-size="14" font-weight="bold" fill="#2b5985">第 1 层 turn.ts（回合入口）</text>
+  <text x="62" y="106" font-size="11.5" fill="#24292f">executeTurn :83 串行 admission（输入先排队） · executeTurnCommand :108 开轮</text>
+  <text x="62" y="126" font-size="11.5" font-weight="bold" fill="#b35900">⚠ 在任何 await 之前冻结：模型选择 / outputStyle / /compact / /rewind</text>
+  <text x="62" y="144" font-size="11.5" fill="#24292f">SessionStart hooks · 用户消息持久化 + 异步起标题 · abort scope</text>
+
+  <line x1="440" y1="150" x2="440" y2="172" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- layer 2 loop -->
+  <rect x="40" y="176" width="800" height="104" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="62" y="202" font-size="14" font-weight="bold" fill="#2c7a3f">第 2 层 turn-loop.ts（provider-turn 外层循环，while(true) :62）</text>
+  <text x="62" y="224" font-size="11.5" fill="#24292f">每步治理（局部事实，每圈重算）：microcompact :92 → rapid-refill + auto compact :103</text>
+  <text x="62" y="244" font-size="11.5" fill="#24292f">→ initializeMcp :136 → 本步工具集 buildTurnDisallowedTools :140 → 四类 system-reminder 注入</text>
+  <text x="62" y="264" font-size="11.5" fill="#24292f">→ buildRuntimeProviderRequestMessages :206（cache-control 在投影之后统一设）→ startModelRequest :224</text>
+  <text x="700" y="240" font-size="11.5" fill="#2c7a3f">返回 "break" 才退出</text>
+
+  <line x1="440" y1="280" x2="440" y2="302" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- layer 3 step -->
+  <rect x="40" y="306" width="800" height="66" rx="10" fill="#fdf6ec" stroke="#c98a2b" stroke-width="2"/>
+  <text x="62" y="330" font-size="14" font-weight="bold" fill="#8a5a12">第 3 层 turn-model-step.ts（单个 model step + 全部恢复路径）</text>
+  <text x="62" y="352" font-size="11.5" fill="#24292f">流式工具协调器 :227（边流式边执行）· runModelTextRequest :255 · 恢复 catch 段：流恢复 / admission 退避 / 取消快照 / 超窗反应式压缩</text>
+
+  <!-- stop -->
+  <rect x="40" y="290" width="0" height="0" fill="none"/>
+  <line x1="840" y1="339" x2="858" y2="339" stroke="#5a6b7b" stroke-width="2"/>
+  <line x1="858" y1="339" x2="858" y2="256" stroke="#5a6b7b" stroke-width="2"/>
+  <line x1="858" y1="256" x2="846" y2="256" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="736" y="300" text-anchor="middle" font-size="11.5" fill="#8a5a12">工具结果回灌 → 再转一圈</text>
+
+  <!-- stop adjudication -->
+  <rect x="40" y="384" width="800" height="30" rx="8" fill="#f3eefe" stroke="#8250df" stroke-width="2"/>
+  <text x="440" y="404" text-anchor="middle" font-size="12.5" fill="#6639ba">停止裁决 turn-stop.ts :178 finishModelStepWithoutToolCalls：先持久化 assistant → guide 转向？→ Stop hook？→ complete + "break"　｜　无次数硬上限（AGENTS.md:11），停止全靠语义事件</text>
+</svg>

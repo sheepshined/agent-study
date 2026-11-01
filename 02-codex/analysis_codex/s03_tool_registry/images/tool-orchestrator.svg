@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="430" viewBox="0 0 860 430" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="860" height="430" fill="#fafbfc"/>
+  <text x="430" y="34" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">工具总闸：注册表 → orchestrator 四段 → 结果</text>
+
+  <!-- sources -->
+  <text x="120" y="72" text-anchor="middle" font-size="13" font-weight="bold" fill="#2b5985">工具来源（一张表）</text>
+  <rect x="40" y="84" width="160" height="34" rx="6" fill="#eef4fb" stroke="#4a78b5"/>
+  <text x="120" y="106" text-anchor="middle" font-size="12.5" fill="#24292f">内置（unified_exec 等）</text>
+  <rect x="40" y="126" width="160" height="34" rx="6" fill="#eef4fb" stroke="#4a78b5"/>
+  <text x="120" y="148" text-anchor="middle" font-size="12.5" fill="#24292f">MCP（外部 server）</text>
+  <rect x="40" y="168" width="160" height="34" rx="6" fill="#eef4fb" stroke="#4a78b5"/>
+  <text x="120" y="190" text-anchor="middle" font-size="12.5" fill="#24292f">多智能体（ns 隔离）</text>
+  <rect x="40" y="210" width="160" height="34" rx="6" fill="#eef4fb" stroke="#4a78b5"/>
+  <text x="120" y="232" text-anchor="middle" font-size="12.5" fill="#24292f">插件 / 技能</text>
+
+  <!-- registry -->
+  <rect x="240" y="120" width="150" height="90" rx="10" fill="#f0f7ee" stroke="#3d9a50" stroke-width="2"/>
+  <text x="315" y="150" text-anchor="middle" font-size="14" font-weight="bold" fill="#2c7a3f">ToolRegistry</text>
+  <text x="315" y="172" text-anchor="middle" font-size="11.5" fill="#24292f">registry.rs :302</text>
+  <text x="315" y="190" text-anchor="middle" font-size="11" fill="#6a737d">命名空间 + 扁平名互查</text>
+
+  <!-- orchestrator -->
+  <rect x="440" y="66" width="380" height="250" rx="12" fill="#fff9f0" stroke="#d9a03c" stroke-width="2"/>
+  <text x="630" y="92" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#b35900">orchestrator（orchestrator.rs :135，文件头即设计文档）</text>
+  <rect x="465" y="108" width="330" height="38" rx="6" fill="#ffffff" stroke="#e3c28a"/>
+  <text x="630" y="125" text-anchor="middle" font-size="12.5" fill="#24292f">① 审批判定（AskForApproval，s04 双轴）</text>
+  <text x="630" y="140" text-anchor="middle" font-size="10.5" fill="#6a737d">缓存命中免弹窗：no re-approval thanks to caching</text>
+  <rect x="465" y="152" width="330" height="38" rx="6" fill="#ffffff" stroke="#e3c28a"/>
+  <text x="630" y="169" text-anchor="middle" font-size="12.5" fill="#24292f">② 选沙箱（SandboxPolicy 档位，s04）</text>
+  <text x="630" y="184" text-anchor="middle" font-size="10.5" fill="#6a737d">sandbox_override_for_first_attempt :238</text>
+  <rect x="465" y="196" width="330" height="38" rx="6" fill="#ffffff" stroke="#e3c28a"/>
+  <text x="630" y="213" text-anchor="middle" font-size="12.5" fill="#24292f">③ attempt：tool_start → 执行 → tool_finish</text>
+  <text x="630" y="228" text-anchor="middle" font-size="10.5" fill="#6a737d">lifecycle.rs 生命周期事件 + 遥测</text>
+  <rect x="465" y="240" width="330" height="38" rx="6" fill="#fdebe8" stroke="#d4726a"/>
+  <text x="630" y="257" text-anchor="middle" font-size="12.5" fill="#24292f">④ SandboxErr::Denied → 升级重试（s05 专讲）</text>
+  <text x="630" y="272" text-anchor="middle" font-size="10.5" fill="#b35900">只有"策略挡了"才升级；命令报错不重试</text>
+  <!-- arrows inside orchestrator -->
+  <line x1="630" y1="146" x2="630" y2="152" stroke="#5a6b7b" stroke-width="0"/>
+  <line x1="630" y1="190" x2="630" y2="196" stroke="#5a6b7b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="630" y1="234" x2="630" y2="240" stroke="#5a6b7b" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- result -->
+  <rect x="300" y="350" width="260" height="46" rx="8" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="430" y="369" text-anchor="middle" font-size="13" fill="#24292f">工具结果回填历史（成功或合成错误）</text>
+  <text x="430" y="387" text-anchor="middle" font-size="11" fill="#2c7a3f">被拒的调用也必有配对结果，无悬空 tool_call</text>
+
+  <!-- flow arrows -->
+  <line x1="200" y1="165" x2="235" y2="165" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="390" y1="165" x2="435" y2="165" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="412" y="155" text-anchor="middle" font-size="11" fill="#6a737d">查表</text>
+  <path d="M 630 316 C 630 340 520 348 565 354" fill="none" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- bottom note -->
+  <text x="430" y="418" text-anchor="middle" font-size="12" fill="#6a737d">铁律：每次执行必过总闸，没有旁路 ｜ mini 实现：s03_tool_registry/code.py</text>
+</svg>

@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="470" viewBox="0 0 880 470" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="880" height="470" fill="#fafbfc"/>
+  <text x="440" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">s03 双层 lane 串行化 + 写者围栏</text>
+
+  <!-- burst -->
+  <rect x="28" y="66" width="180" height="150" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="118" y="94" text-anchor="middle" font-size="14" font-weight="bold" fill="#2b5985">同会话消息轰炸</text>
+  <g font-size="12" font-family="Consolas, monospace" fill="#24292f">
+    <text x="44" y="124">msg#1 t=0ms</text>
+    <text x="44" y="150">msg#2 t=200ms</text>
+    <text x="44" y="176">msg#3 t=450ms</text>
+  </g>
+  <text x="118" y="204" text-anchor="middle" font-size="11" fill="#8a5a12">coding CLI 靠"人一次发一条"逃避</text>
+
+  <!-- session lane -->
+  <rect x="268" y="60" width="250" height="160" rx="10" fill="#fdf6ec" stroke="#c98a2b" stroke-width="2"/>
+  <text x="393" y="88" text-anchor="middle" font-size="14" font-weight="bold" fill="#8a5a12">会话 lane（外层，宽 1）</text>
+  <g font-size="11.5" font-family="Consolas, monospace" fill="#24292f">
+    <text x="284" y="116">lane = session:agent:main:main</text>
+    <rect x="284" y="128" width="218" height="18" fill="#fde8d8"/><text x="290" y="141">run#1 ▶▶▶▶▶▶▶▶ 完成</text>
+    <rect x="284" y="150" width="218" height="18" fill="#fde8d8"/><text x="290" y="163">run#2 等待…▶▶▶▶ 完成</text>
+    <rect x="284" y="172" width="218" height="18" fill="#fde8d8"/><text x="290" y="185">run#3 等待……▶ 完成</text>
+  </g>
+  <text x="393" y="210" text-anchor="middle" font-size="11" fill="#8a5a12">队列模式：steer / followup / collect / interrupt</text>
+  <line x1="208" y1="140" x2="262" y2="140" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- global lane -->
+  <rect x="268" y="248" width="250" height="120" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="393" y="276" text-anchor="middle" font-size="14" font-weight="bold" fill="#2c7a3f">全局 lane（内层，整机闸）</text>
+  <g font-size="11.5" fill="#24292f">
+    <text x="284" y="304">main = max(8, CPU×4)；subagent = 8</text>
+    <text x="284" y="328">未配置 lane 宽度默认 1</text>
+    <text x="284" y="352">cron 槽内再排队 → 改派 cron-nested 防自锁</text>
+  </g>
+  <line x1="393" y1="220" x2="393" y2="242" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="240" y="238" text-anchor="end" font-size="11" fill="#6a737d">嵌套，不是二选一</text>
+
+  <!-- writer fence -->
+  <rect x="578" y="60" width="274" height="308" rx="10" fill="#f3eefe" stroke="#8250df" stroke-width="2"/>
+  <text x="715" y="90" text-anchor="middle" font-size="14" font-weight="bold" fill="#6639ba">写者围栏（writer fence）</text>
+  <g font-size="11.5" fill="#24292f">
+    <text x="594" y="120">流式开始前：登记持久写者声明</text>
+    <text x="606" y="140" font-family="Consolas, monospace">activeWriterRunId = run#1</text>
+    <text x="594" y="170">每次 transcript 追加带：</text>
+    <text x="606" y="190" font-family="Consolas, monospace">expectedWriterRunId</text>
+    <text x="594" y="220">同步 SQLite 事务内校验：</text>
+    <text x="606" y="240" fill="#2c7a3f">一致 → 允许写入 ✓</text>
+    <text x="606" y="262" fill="#b42318">已被取代 → 拒绝提交 ✗</text>
+  </g>
+  <rect x="594" y="284" width="242" height="70" rx="8" fill="#fff3f3" stroke="#d29922" stroke-dasharray="4 3"/>
+  <text x="715" y="308" text-anchor="middle" font-size="11.5" fill="#8a5a12">interrupt 场景：run#1 被 run#2 取代后</text>
+  <text x="715" y="328" text-anchor="middle" font-size="11.5" fill="#8a5a12">迟到的写入提交不进历史——脏数据出局</text>
+  <line x1="518" y1="140" x2="572" y2="150" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="715" y="392" text-anchor="middle" font-size="11" fill="#6639ba">十 lane 拓扑真源：src/process/lanes.ts:12-35</text>
+
+  <text x="440" y="410" text-anchor="middle" font-size="12.5" fill="#6a737d">对应真实源码：src/agents/embedded-agent-runner/lanes.ts:16-33 ｜ run-orchestrator.ts:254/:269 双层入队 ｜ session-tool-result-guard.ts:641-661</text>
+  <text x="440" y="436" text-anchor="middle" font-size="12.5" fill="#6a737d">docs/concepts/agent-loop.md:50（写者围栏）｜ docs/concepts/queue.md:19,37-42（并发默认值与四种队列模式）</text>
+</svg>

@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 870 400" width="870" height="400" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <rect x="0" y="0" width="870" height="400" fill="#f4f7fa"/>
+  <text x="435" y="30" text-anchor="middle" font-size="18" font-weight="bold" fill="#2c3e50">s02　一拍的一生：tick → 执行 → after_tick（BSP 超步）</text>
+
+  <!-- 超步 N -->
+  <rect x="40" y="60" width="790" height="130" rx="10" fill="#ffffff" stroke="#5d8aa8" stroke-width="2"/>
+  <text x="60" y="86" font-size="14" font-weight="bold" fill="#2c5f8a">超步 N</text>
+
+  <rect x="60" y="100" width="200" height="66" rx="8" fill="#eaf2f8" stroke="#85c1e9"/>
+  <text x="160" y="124" text-anchor="middle" font-size="13" font-weight="bold" fill="#2471a3">tick()　规划</text>
+  <text x="160" y="144" text-anchor="middle" font-size="11" fill="#5d6d7e">版本对比 → 任务列表</text>
+  <text x="160" y="158" text-anchor="middle" font-size="10.5" fill="#95a5a6">_loop.py:611 / _algo.py:1272</text>
+
+  <line x1="260" y1="133" x2="330" y2="133" stroke="#2c3e50" stroke-width="2" marker-end="url(#ar2)"/>
+
+  <rect x="335" y="100" width="200" height="66" rx="8" fill="#eaf7ee" stroke="#7dcea0"/>
+  <text x="435" y="124" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e8449">执行　runner.tick()</text>
+  <text x="435" y="144" text-anchor="middle" font-size="11" fill="#5d6d7e">并发跑任务：读通道 → 节点函数</text>
+  <text x="435" y="158" text-anchor="middle" font-size="10.5" fill="#95a5a6">_runner.py:176（写只进暂存区）</text>
+
+  <line x1="535" y1="133" x2="605" y2="133" stroke="#2c3e50" stroke-width="2" marker-end="url(#ar2)"/>
+
+  <rect x="610" y="100" width="200" height="66" rx="8" fill="#fef5e7" stroke="#f0b27a"/>
+  <text x="710" y="124" text-anchor="middle" font-size="13" font-weight="bold" fill="#af601a">after_tick()　写回</text>
+  <text x="710" y="144" text-anchor="middle" font-size="11" fill="#5d6d7e">apply_writes → 版本前进 → 存档</text>
+  <text x="710" y="158" text-anchor="middle" font-size="10.5" fill="#95a5a6">_loop.py:697 / _algo.py:244</text>
+
+  <!-- 版本差分说明 -->
+  <rect x="40" y="210" width="790" height="74" rx="10" fill="#ffffff" stroke="#b3a6dc" stroke-width="2"/>
+  <text x="60" y="234" font-size="13" font-weight="bold" fill="#5b4a9e">"边"的运行时真相：不是函数调用，是版本差分触发（_algo.py:1272 _triggers）</text>
+  <text x="60" y="256" font-size="12" fill="#5d6d7e">b 在编译期注册触发条件：监听 a 写的通道</text>
+  <text x="60" y="274" font-size="12" fill="#5d6d7e">a 的写入让通道版本 1→2；b "当前版本 2 &gt; 我见过的 1" → 被规划进下一拍</text>
+
+  <!-- 两拍对比 -->
+  <rect x="40" y="300" width="385" height="80" rx="10" fill="#fdf2e9" stroke="#e59866"/>
+  <text x="232" y="324" text-anchor="middle" font-size="13" font-weight="bold" fill="#9c4221">超步 1：write_plan 写 plan</text>
+  <text x="232" y="346" text-anchor="middle" font-size="11.5" fill="#7b5232">critic / planner2 此时还读不到</text>
+  <text x="232" y="364" text-anchor="middle" font-size="11.5" fill="#7b5232">——第 N 拍的写入第 N+1 拍才可见（main.py:2972）</text>
+
+  <rect x="445" y="300" width="385" height="80" rx="10" fill="#e8f8f5" stroke="#48c9b0"/>
+  <text x="637" y="324" text-anchor="middle" font-size="13" font-weight="bold" fill="#148f77">超步 2：critic 与 planner2 并发跑</text>
+  <text x="637" y="346" text-anchor="middle" font-size="11.5" fill="#0e6655">同拍互不可见（通道拍内不可变，main.py:2973）</text>
+  <text x="637" y="364" text-anchor="middle" font-size="11.5" fill="#0e6655">拍间统一写回 → 天然可存档、可并行</text>
+
+  <defs>
+    <marker id="ar2" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#2c3e50"/>
+    </marker>
+  </defs>
+</svg>

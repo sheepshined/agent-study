@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="420" viewBox="0 0 880 420" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="880" height="420" fill="#fafbfc"/>
+  <text x="440" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">权限格子：三段优先级链（permission/service.ts:114）</text>
+
+  <!-- segment 1 channels -->
+  <rect x="40" y="56" width="240" height="180" rx="10" fill="#f3eefe" stroke="#8250df" stroke-width="2"/>
+  <text x="160" y="82" text-anchor="middle" font-size="14" font-weight="bold" fill="#6639ba">第 1 段：特殊通道（通道级）</text>
+  <g font-size="11.5" fill="#24292f">
+    <text x="60" y="110">· plan 模式切换特例</text>
+    <text x="60" y="132">· requiresUserInteraction</text>
+    <text x="60" y="158" font-weight="bold" fill="#6639ba">· alwaysAsk（checkAlwaysAsk :367）</text>
+    <text x="60" y="184" fill="#6639ba">　工具自报"必须问人"</text>
+    <text x="60" y="206" fill="#6639ba">　压过 yolo/plan 的放行</text>
+  </g>
+  <text x="160" y="228" text-anchor="middle" font-size="10.5" fill="#b35900">命中即返回，不看任何模式</text>
+
+  <!-- segment 2 policy -->
+  <rect x="310" y="56" width="250" height="180" rx="10" fill="#fdf6ec" stroke="#c98a2b" stroke-width="2"/>
+  <text x="435" y="82" text-anchor="middle" font-size="14" font-weight="bold" fill="#8a5a12">第 2 段：模式与硬阻断</text>
+  <g font-size="11.5" font-family="Consolas, monospace" fill="#24292f">
+    <text x="330" y="110">auto → deny (:166) ★占位</text>
+    <text x="330" y="132">yolo → 直通 (:156)</text>
+    <text x="330" y="154">disallowedTools (:171)</text>
+    <text x="330" y="176">项目 deny → 项目 ask</text>
+  </g>
+  <text x="435" y="200" text-anchor="middle" font-size="10.5" fill="#a83a32">yolo 排在 disallowed 之前：yolo 下禁用清单不生效</text>
+  <text x="435" y="220" text-anchor="middle" font-size="10.5" fill="#8a5a12">（头注释："不是笔误，改它等于改契约"）</text>
+
+  <!-- segment 3 derive -->
+  <rect x="590" y="56" width="250" height="180" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="715" y="82" text-anchor="middle" font-size="14" font-weight="bold" fill="#2c7a3f">第 3 段：逐工具推导</text>
+  <g font-size="11.5" fill="#24292f">
+    <text x="610" y="110">plan → 只读直通，写要 ask</text>
+    <text x="610" y="132">edit → 文件写直通，Bash 要 ask</text>
+    <text x="610" y="154">build → 普通工具直通</text>
+    <text x="610" y="180">工具未声明时按名字兜底</text>
+    <text x="610" y="202" fill="#a83a32">（resolveCapability :630，新工具会落错档）</text>
+  </g>
+  <text x="715" y="228" text-anchor="middle" font-size="10.5" fill="#2c7a3f">结论 always 是 allow | ask | deny 三元</text>
+
+  <line x1="280" y1="146" x2="304" y2="146" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="560" y1="146" x2="584" y2="146" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- bash knowledge base -->
+  <rect x="40" y="256" width="500" height="86" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="62" y="280" font-size="13.5" font-weight="bold" fill="#2b5985">Bash 另有一层：命令知识库（bash-command-permission-policy.ts）</text>
+  <text x="62" y="302" font-size="11.5" fill="#24292f">generated/bash-command-registry.ts：1.9 MB，@withfig/autocomplete 确定性生成（含 sha256，loadSpecNodes=522）</text>
+  <text x="62" y="324" font-size="11.5" fill="#24292f">HIGH_RISK_ROOT_COMMANDS(:16-33：bash/chmod/dd/mount/rm/sudo…) + wrapper 参数穿透 → 六家独一份"CLI 手册当权限数据"</text>
+
+  <!-- decision object -->
+  <rect x="570" y="256" width="270" height="86" rx="10" fill="#fff3f3" stroke="#c9524a" stroke-width="2"/>
+  <text x="705" y="280" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#a83a32">决策对象带结构化标记（:61/:88）</text>
+  <text x="705" y="304" text-anchor="middle" font-size="11.5" fill="#24292f">{ decision, ruleId, alwaysAsk }</text>
+  <text x="705" y="326" text-anchor="middle" font-size="11" fill="#a83a32">PreToolUse hook 看得到 alwaysAsk —— 确认不可被 hook 洗掉</text>
+
+  <text x="440" y="392" text-anchor="middle" font-size="13" fill="#6a737d">对应真实源码：core/src/permission/{service.ts,rule-matching.ts}｜contracts/src/interfaces/session.port.ts:32（5 值模式）｜executor/permission-flow.ts</text>
+</svg>

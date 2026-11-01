@@ -1,0 +1,11 @@
+# Prometheus 抓取配置。
+# 两个机制点：
+#   1) scrape_interval 5s：采样频率决定告警延迟，也决定监控自身的存储成本；
+#   2) 目标写服务名 agent-svc 而不是 IP——容器编排的世界里 IP 会漂，DNS 名不变。
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: agent-svc
+    static_configs:
+      - targets: ["agent-svc:8000"]

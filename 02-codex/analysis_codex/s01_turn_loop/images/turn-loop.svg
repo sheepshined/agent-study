@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="470" viewBox="0 0 860 470" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="860" height="470" fill="#fafbfc"/>
+  <text x="430" y="34" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">run_turn：一次回合的完整生命周期（turn.rs）</text>
+
+  <!-- pre-turn pipeline -->
+  <rect x="60" y="60" width="740" height="86" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="430" y="84" text-anchor="middle" font-size="14" font-weight="bold" fill="#2b5985">回合开场（世界重置点，:185–:272）</text>
+  <rect x="80" y="96" width="160" height="36" rx="6" fill="#ffffff" stroke="#8fb3d9"/>
+  <text x="160" y="119" text-anchor="middle" font-size="12.5" fill="#24292f">1 guardian 前置审查</text>
+  <rect x="265" y="96" width="175" height="36" rx="6" fill="#ffffff" stroke="#8fb3d9"/>
+  <text x="352" y="119" text-anchor="middle" font-size="12.5" fill="#24292f">2 结算上一回合延迟钩子</text>
+  <rect x="465" y="96" width="160" height="36" rx="6" fill="#ffffff" stroke="#8fb3d9"/>
+  <text x="545" y="119" text-anchor="middle" font-size="12.5" fill="#24292f">3 预采样压缩腾窗口</text>
+  <rect x="650" y="96" width="135" height="36" rx="6" fill="#ffffff" stroke="#8fb3d9"/>
+  <text x="717" y="119" text-anchor="middle" font-size="12.5" fill="#24292f">4 按需装配 MCP</text>
+
+  <!-- step loop -->
+  <rect x="140" y="180" width="580" height="200" rx="12" fill="#eefaf0" stroke="#3d9a50" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="430" y="206" text-anchor="middle" font-size="14" font-weight="bold" fill="#2c7a3f">step 循环（loop :438）—— 一拍一步，步内世界冻结</text>
+
+  <rect x="170" y="226" width="130" height="44" rx="6" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="235" y="244" text-anchor="middle" font-size="12.5" fill="#24292f">捕获 step 快照</text>
+  <text x="235" y="261" text-anchor="middle" font-size="10.5" fill="#6a737d">工具清单+上下文冻结</text>
+
+  <rect x="345" y="226" width="110" height="44" rx="6" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="400" y="244" text-anchor="middle" font-size="12.5" fill="#24292f">采样</text>
+  <text x="400" y="261" text-anchor="middle" font-size="10.5" fill="#6a737d">run_sampling_request</text>
+
+  <rect x="500" y="226" width="90" height="44" rx="6" fill="#fff7e6" stroke="#d9a03c"/>
+  <text x="545" y="244" text-anchor="middle" font-size="12.5" fill="#24292f">有工具调用？</text>
+
+  <rect x="510" y="300" width="180" height="56" rx="6" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="600" y="320" text-anchor="middle" font-size="12.5" fill="#24292f">执行工具 → 结果回填历史</text>
+  <text x="600" y="338" text-anchor="middle" font-size="11" fill="#b35900">预算检查 → 必要时 auto compact</text>
+
+  <rect x="180" y="300" width="150" height="44" rx="6" fill="#eef4fb" stroke="#4a78b5"/>
+  <text x="255" y="318" text-anchor="middle" font-size="12.5" fill="#2b5985">终稿 → 退出循环</text>
+  <text x="255" y="336" text-anchor="middle" font-size="10.5" fill="#6a737d">turn-stop hooks 收尾</text>
+
+  <!-- arrows -->
+  <line x1="300" y1="248" x2="340" y2="248" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="455" y1="248" x2="495" y2="248" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="560" y1="270" x2="585" y2="296" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="640" y="282" text-anchor="middle" font-size="11.5" fill="#2c7a3f">是 ↓</text>
+  <path d="M 545 226 C 545 214 520 205 500 202" fill="none" stroke="#5a6b7b" stroke-width="0"/>
+  <line x1="500" y1="270" x2="470" y2="296" stroke="#2b5985" stroke-width="0"/>
+  <path d="M 510 248 C 470 250 420 270 335 300" fill="none" stroke="#4a78b5" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arr)"/>
+  <text x="392" y="278" text-anchor="middle" font-size="11.5" fill="#2b5985">否 → 终稿</text>
+  <!-- loop back arrow -->
+  <path d="M 510 328 C 430 400 250 390 235 274" fill="none" stroke="#3d9a50" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arr)"/>
+  <text x="352" y="388" text-anchor="middle" font-size="12" fill="#2c7a3f">工具结果已入库 → 下一 step（步间才是变更窗口）</text>
+
+  <!-- steering -->
+  <path d="M 60 165 C 60 210 140 240 166 248" fill="none" stroke="#8250df" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arr)"/>
+  <text x="76" y="196" text-anchor="middle" font-size="11.5" fill="#8250df">用户插话</text>
+  <text x="76" y="212" text-anchor="middle" font-size="11.5" fill="#8250df">(steering)</text>
+  <text x="152" y="186" text-anchor="middle" font-size="11" fill="#8250df">loop 顶部并入，不重启回合</text>
+
+  <!-- bottom note -->
+  <rect x="60" y="404" width="740" height="44" rx="8" fill="#f6f8fa" stroke="#c9d4de"/>
+  <text x="430" y="423" text-anchor="middle" font-size="12.5" fill="#24292f">取消（CancellationToken）随时可中止回合；已入库内容不回滚——崩溃恢复交给 rollout（s02）</text>
+  <text x="430" y="441" text-anchor="middle" font-size="12.5" fill="#6a737d">mini 实现：s01_turn_loop/code.py ｜ 真实源码：codex-rs/core/src/session/turn.rs</text>
+</svg>

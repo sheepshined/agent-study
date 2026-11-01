@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="480" viewBox="0 0 880 480" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="880" height="480" fill="#fafbfc"/>
+  <text x="440" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">s10 设备配对与六条限流：无人值守的最后一道墙</text>
+
+  <!-- device pairing -->
+  <rect x="28" y="64" width="400" height="250" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="228" y="92" text-anchor="middle" font-size="14" font-weight="bold" fill="#2b5985">设备配对（connect 时必须证明身份）</text>
+  <g font-size="11.5" font-family="Consolas, monospace" fill="#24292f">
+    <text x="44" y="120">① connect 带 device identity</text>
+    <text x="44" y="144">② Gateway 下发 challenge nonce</text>
+    <text x="44" y="168">③ 设备必须签名 nonce</text>
+    <text x="44" y="192">④ 签名 payload v3 绑 platform + deviceFamily</text>
+    <text x="44" y="216">⑤ 通过 → 下发 device token（后续重连用）</text>
+  </g>
+  <g font-size="11.5" fill="#24292f">
+    <text x="44" y="248">loopback 本机可自动批准（同机 UX 顺畅）</text>
+    <text x="44" y="270" fill="#b42318">tailnet / LAN 一律显式批准（含同机 tailnet）</text>
+    <text x="44" y="292" fill="#b42318">重连钉住配对元数据：元数据变了 → 重新配对</text>
+  </g>
+
+  <!-- six limits -->
+  <rect x="466" y="64" width="386" height="250" rx="10" fill="#f3eefe" stroke="#8250df" stroke-width="2"/>
+  <text x="659" y="92" text-anchor="middle" font-size="14" font-weight="bold" fill="#6639ba">六条独立限流（rate-limiting.md:17-24）</text>
+  <g font-size="11" font-family="Consolas, monospace" fill="#24292f">
+    <rect x="482" y="104" width="354" height="26" fill="#efe6fb"/><text x="490" y="122">认证失败　10/60s → 锁 5 分钟（loopback 豁免）</text>
+    <rect x="482" y="134" width="354" height="26" fill="#e8dcf8"/><text x="490" y="152">浏览器 WS 认证失败　同上，loopback 不豁免</text>
+    <rect x="482" y="164" width="354" height="26" fill="#efe6fb"/><text x="490" y="182">webhook 认证失败　20/60s → 锁 60s（不可配）</text>
+    <rect x="482" y="194" width="354" height="26" fill="#e8dcf8"/><text x="490" y="212">控制面写 RPC　30/60s per method+device+IP</text>
+    <rect x="482" y="224" width="354" height="26" fill="#efe6fb"/><text x="490" y="242">ACP 会话创建　120/10s</text>
+    <rect x="482" y="254" width="354" height="26" fill="#e8dcf8"/><text x="490" y="272">Gateway 重启　30s 冷却</text>
+  </g>
+  <text x="659" y="300" text-anchor="middle" font-size="11" fill="#6639ba">各自保护不同边界、按不同身份计数、错误形状不同</text>
+  <line x1="428" y1="190" x2="460" y2="190" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- node host -->
+  <rect x="28" y="340" width="400" height="90" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="228" y="366" text-anchor="middle" font-size="13" font-weight="bold" fill="#2c7a3f">配对的那头：设备节点宿主</text>
+  <text x="228" y="392" text-anchor="middle" font-size="11.5" fill="#24292f">Rust openclaw-node（unsafe_code="forbid"）：离线签名、密钥擦除、headless</text>
+  <text x="228" y="414" text-anchor="middle" font-size="11.5" fill="#24292f">提供 camera.* / screen.record / location.get / system.run 等设备能力</text>
+
+  <!-- recap -->
+  <rect x="466" y="340" width="386" height="90" rx="10" fill="#fdf6ec" stroke="#c98a2b" stroke-width="2"/>
+  <text x="659" y="366" text-anchor="middle" font-size="13" font-weight="bold" fill="#8a5a12">为什么无人值守系统要这些</text>
+  <text x="659" y="392" text-anchor="middle" font-size="11.5" fill="#24292f">没有人在键盘前 = 没有"最后一次口头确认"；</text>
+  <text x="659" y="414" text-anchor="middle" font-size="11.5" fill="#24292f">身份配对解决"谁在敲门"，限流解决"敲门有多急"</text>
+
+  <text x="440" y="462" text-anchor="middle" font-size="12" fill="#6a737d">对应真实源码：docs/concepts/architecture.md:99-115 ｜ src/pairing/pairing-challenge.ts ｜ crates/openclaw-node-host/Cargo.toml:33 ｜ src/node-host/exec-policy.ts ｜ SECURITY.md:52-53</text>
+</svg>

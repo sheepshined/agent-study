@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="470" viewBox="0 0 860 470" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="860" height="470" fill="#fafbfc"/>
+  <text x="430" y="34" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">沙箱双轴：AskForApproval × SandboxPolicy（两轴正交）</text>
+
+  <!-- axis 1 -->
+  <rect x="45" y="66" width="300" height="150" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="195" y="92" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#2b5985">轴一：审批策略（问不问人）protocol.rs :1004</text>
+  <text x="65" y="118" font-size="12.5" fill="#24292f">UnlessTrusted —— 除显式策略放行，都问</text>
+  <text x="65" y="140" font-size="12.5" fill="#24292f">OnRequest（默认）—— 模型自主决定何时问</text>
+  <text x="65" y="162" font-size="12.5" fill="#24292f">Granular(cfg) —— 细粒度开关，false=自动拒绝</text>
+  <text x="65" y="184" font-size="12.5" fill="#24292f">Never —— 从不问，失败直接回给模型</text>
+  <text x="65" y="206" font-size="10.5" fill="#6a737d">GranularApprovalConfig :1030（5 个独立开关）</text>
+
+  <!-- axis 2 -->
+  <rect x="515" y="66" width="300" height="150" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="665" y="92" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#2c7a3f">轴二：沙箱策略（环境允许什么）protocol.rs :1090</text>
+  <text x="535" y="118" font-size="12.5" fill="#24292f">read-only —— 只读；network 可单独开</text>
+  <text x="535" y="140" font-size="12.5" fill="#24292f">workspace-write —— 工作区可写 + 额外可写根</text>
+  <text x="535" y="162" font-size="12.5" fill="#24292f">external-sandbox —— 已在外部沙箱中</text>
+  <text x="535" y="184" font-size="12.5" fill="#24292f">danger-full-access —— 无限制（慎用）</text>
+  <text x="535" y="206" font-size="10.5" fill="#6a737d">NetworkAccess :1074（Restricted/Enabled）独立于档位</text>
+
+  <!-- matrix -->
+  <rect x="120" y="248" width="380" height="140" rx="10" fill="#fff9f0" stroke="#d9a03c" stroke-width="2"/>
+  <text x="310" y="274" text-anchor="middle" font-size="14" font-weight="bold" fill="#b35900">判定矩阵（tools/sandboxing.rs :194）</text>
+  <text x="140" y="300" font-size="12" fill="#24292f">审批需求 = f(审批档, 沙箱档) → Skip / Needs / Forbidden</text>
+  <text x="140" y="322" font-size="12" fill="#24292f">OnRequest/Granular：仅当沙箱受限（非全权）才问</text>
+  <text x="140" y="344" font-size="12" fill="#24292f">UnlessTrusted：恒问；Never：恒不问</text>
+  <text x="140" y="366" font-size="12" fill="#b35900">Granular 关 sandbox_approval → Forbidden（不弹窗直接拒）</text>
+
+  <!-- writable root -->
+  <rect x="540" y="248" width="280" height="140" rx="10" fill="#fdebe8" stroke="#d4726a" stroke-width="2"/>
+  <text x="680" y="274" text-anchor="middle" font-size="14" font-weight="bold" fill="#a83a30">WritableRoot（protocol.rs :1149）</text>
+  <text x="558" y="300" font-size="12" fill="#24292f">可写根：workspace/</text>
+  <text x="558" y="322" font-size="12" fill="#24292f">恒只读子路径：.codex / .git / .git/hooks</text>
+  <text x="558" y="344" font-size="12" fill="#a83a30">写 workspace/.git/hooks/pre-commit → 拒</text>
+  <text x="558" y="366" font-size="11" fill="#6a737d">防"改 git hook 拿权限"：可写 ≠ 可提权</text>
+
+  <!-- double arrows -->
+  <line x1="345" y1="141" x2="510" y2="141" stroke="#8250df" stroke-width="2.5" marker-end="url(#arr)"/>
+  <line x1="510" y1="156" x2="345" y2="156" stroke="#8250df" stroke-width="2.5" marker-end="url(#arr)"/>
+  <text x="427" y="134" text-anchor="middle" font-size="11.5" fill="#8250df">组合出语义</text>
+  <text x="427" y="176" text-anchor="middle" font-size="11" fill="#8250df">谁也不替谁决定</text>
+  <line x1="310" y1="216" x2="310" y2="244" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="680" y1="216" x2="680" y2="244" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <text x="430" y="420" text-anchor="middle" font-size="12" fill="#6a737d">平台落地：seatbelt.rs（macOS）· landlock.rs（Linux）· windows_mxc.rs（Windows），由 manager.rs get_platform_sandbox（:67）选择</text>
+  <text x="430" y="442" text-anchor="middle" font-size="12" fill="#6a737d">mini 实现：s04_sandbox_axes/code.py ｜ 行号以当前检出为准，上游会漂移</text>
+</svg>

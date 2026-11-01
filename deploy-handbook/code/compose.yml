@@ -1,0 +1,24 @@
+# compose.yml —— 最小部署拓扑：agent 服务 + Prometheus 指标抓取（§9）。
+# 不变量：容器之间的连接走 compose 内部 DNS（服务名 agent-svc 即主机名），
+# 端口映射 ports 只是把端口"开到宿主机"，不是容器互通的前提。
+name: deploy-handbook-demo
+
+services:
+  agent-svc:
+    build: .                    # 用当前目录 Dockerfile 构建并启动
+    image: deploy-agent-svc:local
+    ports:
+      - "8000:8000"
+    environment:
+      AGENT_WARMUP_SECONDS: "3"        # 模拟模型预热 3 秒，期间 /readyz 返回 503
+      AGENT_MAX_COMPLETION_TOKENS: "512"
+    restart: unless-stopped     # 崩溃自动拉起——容器时代的"进程守护"
+    stop_grace_period: 10s      # SIGTERM 之后的优雅停机宽限期，超时才 SIGKILL
+
+  prometheus:
+    image: prom/prometheus:latest      # 当日拉取（版本记录见手册 §9.3 验证输出）
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    restart: unless-stopped

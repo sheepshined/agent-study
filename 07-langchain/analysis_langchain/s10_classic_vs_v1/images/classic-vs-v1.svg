@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="870" height="500" viewBox="0 0 870 500" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="870" height="500" fill="#fafbfc"/>
+  <text x="435" y="34" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">同一个 agent，两个时代：命令式持有 vs 声明式编译</text>
+
+  <!-- classic -->
+  <rect x="40" y="60" width="390" height="300" rx="10" fill="#f6f0fa" stroke="#8250df" stroke-width="2"/>
+  <text x="235" y="88" text-anchor="middle" font-size="16" font-weight="bold" fill="#6639ba">0.x classic（libs/langchain）</text>
+  <text x="235" y="108" text-anchor="middle" font-size="11.5" fill="#6a737d">pyproject:6 name = "langchain-classic"（兼容层）</text>
+  <rect x="70" y="124" width="150" height="42" rx="6" fill="#ffffff" stroke="#b39ddc"/>
+  <text x="145" y="144" text-anchor="middle" font-size="12.5" fill="#24292f">AgentExecutor(Chain)</text>
+  <text x="145" y="160" text-anchor="middle" font-size="10.5" fill="#6a737d">while 循环在类里（:1012）</text>
+  <rect x="245" y="124" width="150" height="42" rx="6" fill="#ffffff" stroke="#b39ddc"/>
+  <text x="320" y="144" text-anchor="middle" font-size="12.5" fill="#24292f">Agent._plan</text>
+  <text x="320" y="160" text-anchor="middle" font-size="10.5" fill="#6a737d">决定下一步（:1570 _call）</text>
+  <rect x="70" y="186" width="150" height="42" rx="6" fill="#ffffff" stroke="#b39ddc"/>
+  <text x="145" y="206" text-anchor="middle" font-size="12.5" fill="#24292f">LLMChain 手工串</text>
+  <text x="145" y="222" text-anchor="middle" font-size="10.5" fill="#6a737d">chains/base.py:52</text>
+  <rect x="245" y="186" width="150" height="42" rx="6" fill="#ffffff" stroke="#b39ddc"/>
+  <text x="320" y="206" text-anchor="middle" font-size="12.5" fill="#24292f">BufferMemory 拼字符串</text>
+  <text x="320" y="222" text-anchor="middle" font-size="10.5" fill="#6a737d">buffer.py:24 手动 save</text>
+  <text x="235" y="266" text-anchor="middle" font-size="12.5" fill="#24292f">定制 = 子类化覆写方法</text>
+  <text x="235" y="290" text-anchor="middle" font-size="12.5" fill="#24292f">每个能力都是一个手工持有的对象</text>
+  <text x="235" y="330" text-anchor="middle" font-size="12" fill="#b35900">网上 0.x 教程对不上 1.x 的根源：包名没变，体系换了</text>
+
+  <!-- v1 -->
+  <rect x="440" y="60" width="390" height="300" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="635" y="88" text-anchor="middle" font-size="16" font-weight="bold" fill="#2c7a3f">1.x v1（libs/langchain_v1）</text>
+  <text x="635" y="108" text-anchor="middle" font-size="11.5" fill="#6a737d">pyproject:6 name = "langchain"（主包）</text>
+  <rect x="470" y="124" width="330" height="42" rx="6" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="635" y="144" text-anchor="middle" font-size="12.5" fill="#24292f">create_agent(model, tools, middleware, checkpointer)</text>
+  <text x="635" y="160" text-anchor="middle" font-size="10.5" fill="#6a737d">factory.py:882 —— 全是声明式参数</text>
+  <rect x="470" y="186" width="330" height="42" rx="6" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="635" y="206" text-anchor="middle" font-size="12.5" fill="#24292f">编译成 StateGraph：model/tools 两节点两条件边</text>
+  <text x="635" y="222" text-anchor="middle" font-size="10.5" fill="#6a737d">factory.py:1623/1627/1770/1790 → :1926 compile</text>
+  <text x="635" y="266" text-anchor="middle" font-size="12.5" fill="#24292f">定制 = 中间件钩子（types.py:455/503）</text>
+  <text x="635" y="290" text-anchor="middle" font-size="12.5" fill="#24292f">记忆 = checkpointer 快照（:891）；产物 = Runnable</text>
+  <text x="635" y="330" text-anchor="middle" font-size="12" fill="#b35900">"agent 是编译产物" —— 换配置即重新编译，不换代码</text>
+
+  <!-- migration arrow -->
+  <line x1="430" y1="210" x2="440" y2="210" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- final assembly -->
+  <rect x="40" y="380" width="790" height="96" rx="10" fill="#fff8e6" stroke="#bd8a00" stroke-width="2"/>
+  <text x="435" y="408" text-anchor="middle" font-size="15" font-weight="bold" fill="#8a6500">收官总装（场景 4）：前九课装进同一个 v1 mini agent</text>
+  <text x="435" y="436" text-anchor="middle" font-size="12.5" fill="#24292f">search_docs 检索工具（s08） + pii/no_deploy 中间件（s05） + checkpointer（s06） + final_answer 结构化输出（s07） + 声明式编译（s01/s04）</text>
+  <text x="435" y="462" text-anchor="middle" font-size="12" fill="#6a737d">一条主线贯穿十课：agent = 声明式配置 × 编译器 → 图 × 钩子 × 快照 —— 全部机制都为"可组装"服务</text>
+</svg>

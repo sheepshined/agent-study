@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="870" height="470" viewBox="0 0 870 470" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="870" height="470" fill="#fafbfc"/>
+  <text x="435" y="34" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">结构化输出：schema 进 prompt → 校验 → 失败带原文重试</text>
+
+  <!-- retry loop -->
+  <rect x="40" y="60" width="500" height="380" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="290" y="90" text-anchor="middle" font-size="15" font-weight="bold" fill="#2b5985">主循环（parse_with_retry）</text>
+
+  <rect x="80" y="112" width="200" height="46" rx="6" fill="#ffffff" stroke="#8fb3d9"/>
+  <text x="180" y="132" text-anchor="middle" font-size="12.5" fill="#24292f">① schema 进提示词</text>
+  <text x="180" y="150" text-anchor="middle" font-size="11" fill="#6a737d">get_format_instructions（pydantic.py:95）</text>
+  <rect x="330" y="112" width="180" height="46" rx="6" fill="#ffffff" stroke="#8fb3d9"/>
+  <text x="420" y="132" text-anchor="middle" font-size="12.5" fill="#24292f">模型回复（文本）</text>
+  <text x="420" y="150" text-anchor="middle" font-size="11" fill="#6a737d">可能带 ```json 围栏</text>
+  <line x1="280" y1="135" x2="325" y2="135" stroke="#5a6b7b" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="205" y="190" width="230" height="60" rx="6" fill="#fff8e6" stroke="#bd8a00"/>
+  <text x="320" y="213" text-anchor="middle" font-size="12.5" fill="#24292f">② 剥围栏 + json.loads（utils/json.py:142）</text>
+  <text x="320" y="233" text-anchor="middle" font-size="12.5" fill="#24292f">按 Schema 校验字段</text>
+  <line x1="420" y1="158" x2="360" y2="185" stroke="#5a6b7b" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="100" y="286" width="180" height="52" rx="6" fill="#eefaf0" stroke="#3d9a50"/>
+  <text x="190" y="307" text-anchor="middle" font-size="13" fill="#2c7a3f">✅ 返回 dict</text>
+  <text x="190" y="327" text-anchor="middle" font-size="11" fill="#6a737d">程序可用、类型正确</text>
+  <line x1="240" y1="250" x2="200" y2="281" stroke="#3d9a50" stroke-width="1.8" marker-end="url(#arr)"/>
+  <text x="205" y="268" font-size="12" fill="#2c7a3f">通过</text>
+
+  <rect x="350" y="286" width="170" height="70" rx="6" fill="#fdebea" stroke="#cf222e"/>
+  <text x="435" y="308" text-anchor="middle" font-size="12.5" fill="#a40e26">❌ 失败</text>
+  <text x="435" y="327" text-anchor="middle" font-size="11" fill="#a40e26">异常带 llm_output 原文</text>
+  <text x="435" y="346" text-anchor="middle" font-size="11" fill="#6a737d">（exceptions.py:15）</text>
+  <line x1="400" y1="250" x2="428" y2="281" stroke="#cf222e" stroke-width="1.8" marker-end="url(#arr)"/>
+  <text x="408" y="268" font-size="12" fill="#cf222e">未过</text>
+
+  <path d="M 435 356 C 435 400 180 400 180 343" fill="none" stroke="#8250df" stroke-width="1.8" stroke-dasharray="6 3" marker-end="url(#arr)"/>
+  <text x="300" y="416" text-anchor="middle" font-size="12.5" fill="#8250df">③ 错误 + 原文塞回消息 → 再问模型（最多 N 次）</text>
+  <text x="300" y="434" text-anchor="middle" font-size="11.5" fill="#6a737d">模型自己修自己；重试用尽则带原文抛出</text>
+
+  <!-- tool strategy -->
+  <rect x="570" y="60" width="260" height="380" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="700" y="90" text-anchor="middle" font-size="15" font-weight="bold" fill="#2c7a3f">第二条路：ToolStrategy</text>
+  <rect x="600" y="116" width="200" height="66" rx="6" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="700" y="140" text-anchor="middle" font-size="12.5" fill="#24292f">schema 包装成 final_answer 工具</text>
+  <text x="700" y="162" text-anchor="middle" font-size="11" fill="#6a737d">（structured_output.py:196）</text>
+  <rect x="600" y="206" width="200" height="66" rx="6" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="700" y="230" text-anchor="middle" font-size="12.5" fill="#24292f">模型"调用工具"</text>
+  <text x="700" y="252" text-anchor="middle" font-size="11" fill="#6a737d">args 天然是 JSON</text>
+  <rect x="600" y="296" width="200" height="56" rx="6" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="700" y="318" text-anchor="middle" font-size="12.5" fill="#24292f">按 schema 校验 args</text>
+  <text x="700" y="338" text-anchor="middle" font-size="11" fill="#6a737d">_parse_with_schema（:77）</text>
+  <line x1="700" y1="182" x2="700" y2="201" stroke="#5a6b7b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="700" y1="272" x2="700" y2="291" stroke="#5a6b7b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="700" y="380" text-anchor="middle" font-size="12" fill="#6a737d">response_format 参数（factory.py:888）</text>
+  <text x="700" y="402" text-anchor="middle" font-size="12" fill="#6a737d">或 with_structured_output（chat_models.py:2385）</text>
+  <text x="700" y="424" text-anchor="middle" font-size="12" fill="#b35900">借工具调用的壳拿原生 JSON</text>
+</svg>

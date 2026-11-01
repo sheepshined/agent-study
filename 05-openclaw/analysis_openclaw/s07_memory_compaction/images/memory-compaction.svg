@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="490" viewBox="0 0 880 490" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="880" height="490" fill="#fafbfc"/>
+  <text x="440" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">s07 记忆与压缩：注入顺序、分层记忆、唯一能改写历史的机制</text>
+
+  <!-- workspace files -->
+  <rect x="28" y="64" width="250" height="270" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="153" y="92" text-anchor="middle" font-size="14" font-weight="bold" fill="#2b5985">workspace 注入文件（顺序即行为）</text>
+  <g font-size="12" font-family="Consolas, monospace" fill="#24292f">
+    <text x="44" y="120">① AGENTS.md（规范）</text>
+    <text x="44" y="144">② SOUL.md（人格）</text>
+    <text x="44" y="168">③ IDENTITY.md（身份）</text>
+    <text x="44" y="192">④ USER.md（服务对象）</text>
+    <text x="44" y="216">⑤ BOOTSTRAP.md（本次引导）</text>
+    <text x="44" y="240">⑥ MEMORY.md（长期记忆）</text>
+    <text x="44" y="272" fill="#b42318">TOOLS.md：有常量、不注入！</text>
+  </g>
+  <text x="153" y="308" text-anchor="middle" font-size="11" fill="#8a5a12">预算：单文件 20000 · 总 60000</text>
+  <text x="153" y="326" text-anchor="middle" font-size="11" fill="#8a5a12">USER.md 固定 4000（Math.min）</text>
+
+  <!-- tiers -->
+  <rect x="315" y="64" width="250" height="270" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="440" y="92" text-anchor="middle" font-size="14" font-weight="bold" fill="#2c7a3f">分层记忆（纯文件 + SQLite 索引）</text>
+  <g font-size="11.5" fill="#24292f">
+    <text x="331" y="120">memory/YYYY-MM-DD.md（日常）</text>
+    <text x="331" y="146">MEMORY.md（长期，仅主私聊加载）</text>
+    <text x="331" y="172">USER.md（指令式用户模型）</text>
+    <text x="331" y="198">standing intents / dreaming（后台）</text>
+    <text x="331" y="228" fill="#b42318">群聊不加载 MEMORY.md</text>
+    <text x="331" y="254">写路径即安全边界：provenance</text>
+    <text x="331" y="280" fill="#2c7a3f">记忆故障永不阻塞回复（超时/回退）</text>
+    <text x="331" y="314" fill="#8a5a12">向量检索 = 可选互斥插件，非核心</text>
+  </g>
+  <line x1="278" y1="199" x2="309" y2="199" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- compaction -->
+  <rect x="602" y="64" width="250" height="270" rx="10" fill="#f3eefe" stroke="#8250df" stroke-width="2"/>
+  <text x="727" y="92" text-anchor="middle" font-size="14" font-weight="bold" fill="#6639ba">compaction（上下文压缩）</text>
+  <g font-size="11.5" fill="#24292f">
+    <text x="618" y="120">触发：窗口溢出 → 压缩 → 重试</text>
+    <text x="618" y="148">新配置默认 mode: "safeguard"</text>
+    <text x="618" y="176">★ 唯一被允许改写历史的机制</text>
+    <text x="618" y="204">保留 tool_call ⇄ toolResult 配对</text>
+    <text x="618" y="232">省略图片插固定标记：每请求</text>
+    <text x="634" y="252">最多 847 UTF-8 字节（刻意固定）</text>
+    <text x="618" y="280" fill="#8a5a12">CJK 字符计入估算</text>
+    <text x="618" y="314" fill="#8a5a12">实现簇：compact*.ts 约 30 文件</text>
+  </g>
+  <line x1="565" y1="199" x2="596" y2="199" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- invariant -->
+  <rect x="28" y="360" width="824" height="74" rx="10" fill="#fff3f3" stroke="#d29922" stroke-width="1.5"/>
+  <text x="440" y="388" text-anchor="middle" font-size="13" font-weight="bold" fill="#8a5a12">根 AGENTS.md："Stable conversation context —— 只有 compaction 可以改写历史"</text>
+  <text x="440" y="414" text-anchor="middle" font-size="12" fill="#6a737d">重建历史会毁掉 prompt 前缀复用；transcript 字节要保留、指令整份送达——压缩改写的是"下一次请求的投影"</text>
+
+  <text x="440" y="466" text-anchor="middle" font-size="12" fill="#6a737d">对应真实源码：src/agents/workspace-bootstrap-policy.ts:19-48 ｜ src/agents/bootstrap-budget.ts:46-49 ｜ src/memory/root-memory-files.ts:7-9 ｜ docs/concepts/compaction.md:23/:26</text>
+</svg>

@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="870" height="440" viewBox="0 0 870 440" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="870" height="440" fill="#fafbfc"/>
+  <text x="435" y="32" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">插件 Hooks：21 个钩子位贴着一次 turn 的时间轴（plugin/src/index.ts:222-334）</text>
+
+  <!-- timeline axis -->
+  <line x1="60" y1="200" x2="810" y2="200" stroke="#5a6b7b" stroke-width="2.5" marker-end="url(#arr)"/>
+  <text x="70" y="186" text-anchor="start" font-size="12" fill="#6a737d">时间 →</text>
+
+  <!-- stage 1 config -->
+  <rect x="70" y="60" width="150" height="120" rx="8" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="145" y="82" text-anchor="middle" font-size="13" font-weight="bold" fill="#2b5985">配置期</text>
+  <text x="145" y="104" text-anchor="middle" font-size="11" fill="#24292f">config · auth</text>
+  <text x="145" y="122" text-anchor="middle" font-size="11" fill="#24292f">provider · shell.env</text>
+  <text x="145" y="146" text-anchor="middle" font-size="10" fill="#6a737d">凭据/选项/子进程环境</text>
+  <line x1="145" y1="180" x2="145" y2="197" stroke="#4a78b5" stroke-width="1.5"/>
+
+  <!-- stage 2 request -->
+  <rect x="245" y="60" width="200" height="120" rx="8" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="345" y="82" text-anchor="middle" font-size="13" font-weight="bold" fill="#2c7a3f">请求构造期</text>
+  <text x="345" y="104" text-anchor="middle" font-size="11" fill="#24292f">chat.message → chat.params</text>
+  <text x="345" y="122" text-anchor="middle" font-size="11" fill="#24292f">→ chat.headers</text>
+  <text x="345" y="146" text-anchor="middle" font-size="10" fill="#6a737d">experimental.chat.messages/system.transform</text>
+  <line x1="345" y1="180" x2="345" y2="197" stroke="#3d9a50" stroke-width="1.5"/>
+
+  <!-- stage 3 execution -->
+  <rect x="470" y="60" width="200" height="120" rx="8" fill="#fdf3e7" stroke="#d9a03c" stroke-width="2"/>
+  <text x="570" y="82" text-anchor="middle" font-size="13" font-weight="bold" fill="#8a5a00">执行期</text>
+  <text x="570" y="104" text-anchor="middle" font-size="11" fill="#24292f">permission.ask</text>
+  <text x="570" y="122" text-anchor="middle" font-size="11" fill="#24292f">tool.execute.before → 工具体</text>
+  <text x="570" y="140" text-anchor="middle" font-size="11" fill="#24292f">→ tool.execute.after</text>
+  <line x1="570" y1="180" x2="570" y2="197" stroke="#d9a03c" stroke-width="1.5"/>
+
+  <!-- stage 4 tail -->
+  <rect x="695" y="60" width="120" height="120" rx="8" fill="#f6f8fa" stroke="#c9d4de" stroke-width="2"/>
+  <text x="755" y="82" text-anchor="middle" font-size="13" font-weight="bold" fill="#24292f">收尾/全程</text>
+  <text x="755" y="104" text-anchor="middle" font-size="11" fill="#24292f">text.complete</text>
+  <text x="755" y="122" text-anchor="middle" font-size="11" fill="#24292f">event（只读）</text>
+  <text x="755" y="140" text-anchor="middle" font-size="11" fill="#24292f">dispose</text>
+  <line x1="755" y1="180" x2="755" y2="197" stroke="#c9d4de" stroke-width="1.5"/>
+
+  <!-- mechanism 1 -->
+  <rect x="40" y="230" width="400" height="120" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="240" y="256" text-anchor="middle" font-size="14" font-weight="bold" fill="#2b5985">机制① output 原地改写（:261/:334）</text>
+  <rect x="60" y="272" width="360" height="60" rx="6" fill="#ffffff" stroke="#8fb3d9"/>
+  <text x="240" y="294" text-anchor="middle" font-size="11.5" fill="#24292f">钩子签名 (input, output)，没有返回值——</text>
+  <text x="240" y="314" text-anchor="middle" font-size="11.5" fill="#24292f">直接改 output.status / output.description / output.system</text>
+  <text x="240" y="342" text-anchor="middle" font-size="10.5" fill="#6a737d">触发完之后"将要生效的对象"才定型</text>
+
+  <!-- mechanism 2 -->
+  <rect x="460" y="230" width="370" height="120" rx="10" fill="#fdf3f3" stroke="#c98a8a" stroke-width="2"/>
+  <text x="645" y="256" text-anchor="middle" font-size="14" font-weight="bold" fill="#8a3030">机制② 失败隔离（trigger 包裹）</text>
+  <rect x="480" y="272" width="330" height="60" rx="6" fill="#ffffff" stroke="#c98a8a"/>
+  <text x="645" y="294" text-anchor="middle" font-size="11.5" fill="#24292f">单个钩子抛错 → 进错误桶，其余插件与主流程照常；</text>
+  <text x="645" y="314" text-anchor="middle" font-size="11.5" fill="#24292f">--pure 旗标一键回到无插件形态</text>
+  <text x="645" y="342" text-anchor="middle" font-size="10.5" fill="#6a737d">第三方代码永远炸不烂推理链路</text>
+
+  <text x="435" y="384" text-anchor="middle" font-size="12" fill="#6a737d">实验面三钩子：experimental.provider.small_model · session.compacting（替换压缩提示）· compaction.autocontinue</text>
+  <text x="435" y="412" text-anchor="middle" font-size="12" fill="#24292f">插件 = (input) =&gt; Promise&lt;Hooks&gt;（:74）—— 一个函数，返回一张钩子表</text>
+</svg>

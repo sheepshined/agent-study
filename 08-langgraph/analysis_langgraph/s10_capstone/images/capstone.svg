@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="540" viewBox="0 0 880 540" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#d4726a"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="880" height="540" fill="#fafbfc"/>
+  <text x="440" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">收官：一台整机跑一个研究型 agent —— 九课机制在同一条时间线上全部点亮</text>
+
+  <!-- 超步时间线 -->
+  <rect x="24" y="50" width="832" height="200" rx="10" fill="#ffffff" stroke="#5a6b7b" stroke-width="2"/>
+  <text x="440" y="70" text-anchor="middle" font-size="13" font-weight="bold" fill="#24292f">超步（s02）视角 · 每拍只做三件事：算任务 → 跑任务 → 合并写入（s03）并推进版本</text>
+
+  <rect x="40" y="84" width="140" height="60" rx="8" fill="#eefaf0" stroke="#3d9a50"/>
+  <text x="110" y="102" text-anchor="middle" font-size="11" font-weight="bold" fill="#2c7a3f">超步 1 · model</text>
+  <text x="110" y="118" text-anchor="middle" font-size="9.5" fill="#24292f">Command(goto=[Send×3])</text>
+  <text x="110" y="134" text-anchor="middle" font-size="9.5" fill="#2c7a3f">s08 扇出 · s09 返回</text>
+
+  <rect x="196" y="84" width="150" height="60" rx="8" fill="#eefaf0" stroke="#3d9a50"/>
+  <text x="271" y="102" text-anchor="middle" font-size="11" font-weight="bold" fill="#2c7a3f">同拍 pushed ×3</text>
+  <text x="271" y="118" text-anchor="middle" font-size="9.5" fill="#24292f">research(沙箱/存档/交接)</text>
+  <text x="271" y="134" text-anchor="middle" font-size="9.5" fill="#2c7a3f">私有输入 · 写 notes reducer</text>
+
+  <rect x="362" y="84" width="130" height="60" rx="8" fill="#eef4fb" stroke="#4a78b5"/>
+  <text x="427" y="102" text-anchor="middle" font-size="11" font-weight="bold" fill="#2b5985">超步 2 · synthesize</text>
+  <text x="427" y="118" text-anchor="middle" font-size="9.5" fill="#24292f">触发条件：notes 版本前进</text>
+  <text x="427" y="134" text-anchor="middle" font-size="9.5" fill="#2b5985">s01 通道 · s02 差分</text>
+
+  <rect x="508" y="84" width="120" height="60" rx="8" fill="#eef4fb" stroke="#4a78b5"/>
+  <text x="568" y="102" text-anchor="middle" font-size="11" font-weight="bold" fill="#2b5985">超步 3 · model</text>
+  <text x="568" y="118" text-anchor="middle" font-size="9.5" fill="#24292f">综合 3 份笔记</text>
+  <text x="568" y="134" text-anchor="middle" font-size="9.5" fill="#2b5985">goto="approval"</text>
+
+  <rect x="644" y="84" width="196" height="60" rx="8" fill="#fff8e6" stroke="#d8a72c"/>
+  <text x="742" y="102" text-anchor="middle" font-size="11" font-weight="bold" fill="#8a6414">超步 4 · approval ⏸</text>
+  <text x="742" y="118" text-anchor="middle" font-size="9.5" fill="#24292f">interrupt() → GraphInterrupt</text>
+  <text x="742" y="134" text-anchor="middle" font-size="9.5" fill="#8a6414">存档记下 next_node（s06/s04）</text>
+
+  <line x1="180" y1="114" x2="194" y2="114" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="346" y1="114" x2="360" y2="114" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="492" y1="114" x2="506" y2="114" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="628" y1="114" x2="642" y2="114" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <rect x="40" y="158" width="306" height="76" rx="8" fill="#f3eefb" stroke="#8250df"/>
+  <text x="193" y="176" text-anchor="middle" font-size="11" font-weight="bold" fill="#6639ba">恢复：invoke(Command(resume="转交"))</text>
+  <text x="193" y="194" text-anchor="middle" font-size="9.5" fill="#24292f">挂起节点从头重跑（s06）· 恢复值按顺序配对</text>
+  <text x="193" y="210" text-anchor="middle" font-size="9.5" fill="#24292f">超步 5 approval → 超步 6 handoff</text>
+  <text x="193" y="226" text-anchor="middle" font-size="9.5" fill="#6639ba">节点重跑，所以副作用要幂等</text>
+
+  <rect x="362" y="158" width="230" height="76" rx="8" fill="#fdebe8" stroke="#d4726a"/>
+  <text x="477" y="176" text-anchor="middle" font-size="11" font-weight="bold" fill="#a83a30">跨层交接（s09）</text>
+  <text x="477" y="194" text-anchor="middle" font-size="9.5" fill="#24292f">子图 agent-sub 的 worker 返回</text>
+  <text x="477" y="210" text-anchor="middle" font-size="9.5" fill="#24292f">Command(goto="writer", graph=PARENT)</text>
+  <text x="477" y="226" text-anchor="middle" font-size="9.5" fill="#a83a30">ParentCommand 冒到父引擎落地 → 超步 7 writer</text>
+
+  <rect x="608" y="158" width="232" height="76" rx="8" fill="#eef4fb" stroke="#4a78b5"/>
+  <text x="724" y="176" text-anchor="middle" font-size="11" font-weight="bold" fill="#2b5985">时间旅行（s05）</text>
+  <text x="724" y="194" text-anchor="middle" font-size="9.5" fill="#24292f">fork 回 next_node=approval 的检查点</text>
+  <text x="724" y="210" text-anchor="middle" font-size="9.5" fill="#24292f">改写 notes → 换 resume="直接发布"</text>
+  <text x="724" y="226" text-anchor="middle" font-size="9.5" fill="#2b5985">同一历史长出第二个未来，主线不动</text>
+
+  <!-- 边界条件 -->
+  <rect x="24" y="262" width="832" height="52" rx="8" fill="#fdebe8" stroke="#d4726a"/>
+  <text x="440" y="282" text-anchor="middle" font-size="11.5" fill="#24292f">引擎的两条硬边界：环里没有出口 → RecursionError（真实 GraphRecursionError，errors.py:67）；</text>
+  <text x="440" y="300" text-anchor="middle" font-size="11.5" fill="#24292f">同一超步对 LastValue 键写两次 → InvalidUpdateError（要并存就声明 reducer，_algo.py:331 的位置）</text>
+
+  <!-- 横向对照 -->
+  <rect x="24" y="326" width="832" height="150" rx="10" fill="#ffffff" stroke="#5a6b7b" stroke-width="2"/>
+  <text x="440" y="348" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#24292f">收官横向对照：LangGraph 在八家 harness 里的位置</text>
+  <line x1="40" y1="360" x2="840" y2="360" stroke="#d0d7de"/>
+  <text x="52" y="380" font-size="10.5" fill="#2b5985">执行单元</text>
+  <text x="150" y="380" font-size="10.5" fill="#24292f">LangGraph：超步 + 通道版本差分 ｜ Codex：run_turn 一步一快照 ｜ Claude Code：while 循环写死 ｜ dsh：插件装配出的 loop ｜ LangChain：声明编译成图</text>
+  <text x="52" y="402" font-size="10.5" fill="#2b5985">状态载体</text>
+  <text x="150" y="402" font-size="10.5" fill="#24292f">通道（reducer 决定合并）｜ rollout JSONL 可重放 ｜ 会话消息列表 ｜ session 日志 ｜ StateGraph schema</text>
+  <text x="52" y="424" font-size="10.5" fill="#2b5985">人在环</text>
+  <text x="150" y="424" font-size="10.5" fill="#24292f">interrupt + Command(resume) ｜ AskForApproval × SandboxPolicy ｜ 工具前确认 ｜ 审批插件 ｜ middleware 钩子</text>
+  <text x="52" y="446" font-size="10.5" fill="#2b5985">扩展点</text>
+  <text x="150" y="446" font-size="10.5" fill="#24292f">节点/边/reducer/checkpointer ｜ 工具 handler + MCP + 角色 toml ｜ 改代码 ｜ 一切皆插件 ｜ 七个钩子</text>
+  <text x="52" y="468" font-size="10.5" fill="#2b5985">一句话</text>
+  <text x="150" y="468" font-size="10.5" fill="#6639ba">给原语不给观点（引擎）｜ 工程化与安全做到极致 ｜ 简单即正确 ｜ 可组装做到极致 ｜ 声明进、图出</text>
+
+  <text x="440" y="502" text-anchor="middle" font-size="11.5" fill="#6a737d">mini 实现：s10_capstone/code.py（引擎 + 整机图 + fork + 两条边界）</text>
+  <text x="440" y="522" text-anchor="middle" font-size="11" fill="#8b949e">读懂原语之后：任何 agent 拓扑都只是它的一种写法。回读顺序见课程根 README</text>
+</svg>

@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="480" viewBox="0 0 880 480" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="880" height="480" fill="#fafbfc"/>
+  <text x="440" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">s04 工具面收窄：八层单调流水线 + 客户端能力裁剪</text>
+
+  <!-- full catalog -->
+  <rect x="28" y="66" width="180" height="270" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="118" y="94" text-anchor="middle" font-size="14" font-weight="bold" fill="#2b5985">权威工具目录</text>
+  <g font-size="11" font-family="Consolas, monospace" fill="#24292f">
+    <text x="44" y="122">read write edit</text>
+    <text x="44" y="144">exec process</text>
+    <text x="44" y="166">web_search web_fetch</text>
+    <text x="44" y="188">memory_search</text>
+    <text x="44" y="210">sessions_spawn</text>
+    <text x="44" y="232">message browser</text>
+    <text x="44" y="254">canvas screen tts</text>
+    <text x="44" y="276">cron nodes …</text>
+  </g>
+  <text x="118" y="316" text-anchor="middle" font-size="11" fill="#8a5a12">tool-catalog.ts 单一清单</text>
+  <text x="118" y="334" text-anchor="middle" font-size="11" fill="#8a5a12">分组 + profile + 约60 条目</text>
+
+  <!-- pipeline -->
+  <rect x="268" y="66" width="300" height="336" rx="10" fill="#fdf6ec" stroke="#c98a2b" stroke-width="2"/>
+  <text x="418" y="94" text-anchor="middle" font-size="14" font-weight="bold" fill="#8a5a12">八层配置收窄（每层只能删不能加）</text>
+  <g font-size="11.5" font-family="Consolas, monospace" fill="#24292f">
+    <text x="284" y="122">1 profile（场景预设）</text>
+    <text x="284" y="146">2 tools.byProvider.profile</text>
+    <text x="284" y="170">3 tools.allow（全局白名单）</text>
+    <text x="284" y="194">4 tools.byProvider.allow</text>
+    <text x="284" y="218">5 agents.&lt;id&gt;.tools.allow</text>
+    <text x="284" y="242">6 agents.&lt;id&gt;.byProvider.allow</text>
+    <text x="284" y="266">7 group tools.allow</text>
+    <text x="284" y="290">8 tools.toolsBySender</text>
+  </g>
+  <text x="418" y="322" text-anchor="middle" font-size="11" fill="#b42318">后一层不能复活前一层删掉的工具</text>
+  <text x="418" y="344" text-anchor="middle" font-size="11" fill="#8a5a12">warning/审计绑定 step.label 归属到层</text>
+  <text x="418" y="372" text-anchor="middle" font-size="11.5" fill="#8a5a12">收窄发生在"进 prompt 的清单"层——</text>
+  <text x="418" y="390" text-anchor="middle" font-size="11.5" fill="#8a5a12">少一个 schema 少一份常驻 token</text>
+  <line x1="208" y1="200" x2="262" y2="200" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- client caps -->
+  <rect x="628" y="110" width="224" height="240" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="740" y="140" text-anchor="middle" font-size="14" font-weight="bold" fill="#2c7a3f">客户端能力裁剪</text>
+  <g font-size="11.5" fill="#24292f">
+    <text x="644" y="170">requiredClientCaps：</text>
+    <text x="644" y="192" font-family="Consolas, monospace">canvas → 需画布呈现</text>
+    <text x="644" y="214" font-family="Consolas, monospace">screen → 需屏幕面</text>
+    <text x="644" y="240">手机客户端：无画布/无屏</text>
+    <text x="644" y="262">→ 这两个工具不进 prompt</text>
+    <text x="644" y="294" fill="#2c7a3f">availability ≠ authorization：</text>
+    <text x="644" y="314">执行边界仍逐调用授权</text>
+  </g>
+  <line x1="568" y1="200" x2="622" y2="200" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- invariant -->
+  <rect x="268" y="418" width="584" height="44" rx="8" fill="#fff3f3" stroke="#d29922" stroke-dasharray="4 3"/>
+  <text x="560" y="436" text-anchor="middle" font-size="11.5" fill="#8a5a12">运行期还有一道闸：before_tool_call 钩子 { block: true } 是终态——低优先级处理器不可推翻（s09 接棒）</text>
+  <text x="560" y="454" text-anchor="middle" font-size="11.5" fill="#8a5a12">顺序即优先级：诊断里"最后一次排除"就是真正的决定者</text>
+
+  <text x="440" y="474" text-anchor="middle" font-size="12" fill="#6a737d">对应真实源码：src/agents/tool-policy-pipeline.ts:66/:145 ｜ src/agents/openclaw-tools.ts:700 finalizeAgentToolAvailability(filterToolsByClientCaps) ｜ src/agents/tool-catalog.ts:69</text>
+</svg>

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 870 400" width="870" height="400" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <rect x="0" y="0" width="870" height="400" fill="#f4f7fa"/>
+  <text x="435" y="30" text-anchor="middle" font-size="18" font-weight="bold" fill="#2c3e50">s08　Send / Map-Reduce：扇出数量是运行时算出来的</text>
+
+  <!-- 拍内：map -->
+  <rect x="40" y="58" width="790" height="180" rx="10" fill="#ffffff" stroke="#5d8aa8" stroke-width="2"/>
+  <text x="60" y="84" font-size="14" font-weight="bold" fill="#2c5f8a">超步 1（拍内：map 发生在这里）</text>
+
+  <rect x="70" y="104" width="190" height="70" rx="8" fill="#eaf2f8" stroke="#85c1e9"/>
+  <text x="165" y="128" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#2471a3">router 节点</text>
+  <text x="165" y="148" text-anchor="middle" font-size="11" fill="#5d6d7e">branch 读 subjects 长度</text>
+  <text x="165" y="164" text-anchor="middle" font-size="11" fill="#5d6d7e">运行时发出 N 个 Send</text>
+
+  <line x1="260" y1="139" x2="320" y2="139" stroke="#2c3e50" stroke-width="2" marker-end="url(#ar8)"/>
+  <text x="290" y="126" text-anchor="middle" font-size="11" fill="#7f8c8d">Send×N</text>
+
+  <rect x="325" y="96" width="330" height="86" rx="8" fill="#eaf7ee" stroke="#7dcea0"/>
+  <text x="490" y="118" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e8449">generate × N（同一拍内 pushed 执行）</text>
+  <text x="345" y="140" font-size="10.5" fill="#0e6655">Send("generate", {"subject":"Python"})</text>
+  <text x="345" y="156" font-size="10.5" fill="#0e6655">Send("generate", {"subject":"会议"}) …</text>
+  <text x="490" y="174" text-anchor="middle" font-size="10.5" fill="#7b5232">各拿私有输入 arg（:802-803），不读共享 state</text>
+
+  <rect x="680" y="104" width="130" height="70" rx="8" fill="#fef5e7" stroke="#f0b27a"/>
+  <text x="745" y="130" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#af601a">accept_push</text>
+  <text x="745" y="148" text-anchor="middle" font-size="10.5" fill="#7b5232">执行中还能往本拍</text>
+  <text x="745" y="162" text-anchor="middle" font-size="10.5" fill="#7b5232">塞新任务（main.py:2979）</text>
+
+  <!-- 拍间：reduce -->
+  <rect x="40" y="254" width="790" height="80" rx="10" fill="#ffffff" stroke="#b3a6dc" stroke-width="2"/>
+  <text x="60" y="280" font-size="13.5" font-weight="bold" fill="#5b4a9e">超步 2（拍间：reduce 靠版本差分被唤醒）</text>
+  <text x="60" y="304" font-size="12" fill="#5d6d7e">jokes 是 reducer 通道：本拍 N 份写入折叠合并（_algo.py:331 → binop.py:143）→ jokes 版本前进</text>
+  <text x="60" y="322" font-size="12" fill="#5d6d7e">finish 监听 jokes：版本差 &gt; 0 → 下一拍执行汇总（就是 s02 的规则，没有任何新机制）</text>
+
+  <!-- 底部：三条语义 -->
+  <rect x="40" y="348" width="790" height="38" rx="8" fill="#f5eef8" stroke="#b3a6dc"/>
+  <text x="435" y="366" text-anchor="middle" font-size="12" fill="#5b4a9e">① 条件边可返回 Send 列表（_control_branch :1766）　② 每个 Send 自带私有输入　③ 错误目标是运行时错误（建图期查不了）</text>
+
+  <defs>
+    <marker id="ar8" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#2c3e50"/>
+    </marker>
+  </defs>
+</svg>

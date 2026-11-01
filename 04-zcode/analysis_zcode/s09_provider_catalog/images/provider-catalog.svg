@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="400" viewBox="0 0 880 400" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="880" height="400" fill="#fafbfc"/>
+  <text x="440" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">provider 目录驱动：加模型 = 加一条 rule，不改编译产物</text>
+
+  <!-- catalog -->
+  <rect x="40" y="56" width="330" height="180" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="205" y="82" text-anchor="middle" font-size="14" font-weight="bold" fill="#2b5985">zcode-builtin.json（revision: 30）</text>
+  <g font-size="11.5" font-family="Consolas, monospace" fill="#24292f">
+    <text x="60" y="108">api.type 只三种：</text>
+    <text x="60" y="130">· anthropic-messages        ×19</text>
+    <text x="60" y="152">· openai-chat-completions   ×5</text>
+    <text x="60" y="174">· openai-responses          ×4</text>
+  </g>
+  <text x="205" y="200" text-anchor="middle" font-size="11" fill="#8a5a12">access.type：api-key / zhipu-coding-plan-api-key / zhipu-account</text>
+  <text x="205" y="222" text-anchor="middle" font-size="11" fill="#2b5985">schema 校验（provider/src/config/schema.ts）→ 解析期拒绝坏 rule</text>
+
+  <!-- factories -->
+  <rect x="420" y="56" width="200" height="180" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="520" y="82" text-anchor="middle" font-size="14" font-weight="bold" fill="#2c7a3f">三个工厂（model-execution.ts:6-9）</text>
+  <g font-size="11.5" font-family="Consolas, monospace" fill="#24292f">
+    <text x="440" y="110">createAnthropic()</text>
+    <text x="440" y="134">createOpenAI()</text>
+    <text x="440" y="158">createOpenAICompatible()</text>
+  </g>
+  <text x="520" y="186" text-anchor="middle" font-size="11" fill="#2c7a3f">都收敛到同一 runner 接口</text>
+  <text x="520" y="212" text-anchor="middle" font-size="11" fill="#8a5a12">底层 AI SDK streamText（runner-runtime.ts）</text>
+
+  <!-- retry -->
+  <rect x="650" y="56" width="190" height="180" rx="10" fill="#fdf6ec" stroke="#c98a2b" stroke-width="2"/>
+  <text x="745" y="82" text-anchor="middle" font-size="14" font-weight="bold" fill="#8a5a12">自持重试</text>
+  <g font-size="11.5" font-family="Consolas, monospace" fill="#24292f">
+    <text x="668" y="110">外层 maxRetries=10</text>
+    <text x="668" y="132">base 2000 / max 60000</text>
+    <text x="668" y="154">+ jitter</text>
+    <text x="668" y="180" fill="#a83a32">AI SDK maxRetries = 0 ★</text>
+  </g>
+  <text x="745" y="206" text-anchor="middle" font-size="10.5" fill="#8a5a12">两层重试相乘 = 100 次请求</text>
+  <text x="745" y="226" text-anchor="middle" font-size="10.5" fill="#8a5a12">idle 窗口随重试 +30s（stream-idle-timeout.ts:23）</text>
+
+  <line x1="370" y1="146" x2="414" y2="146" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="620" y1="146" x2="644" y2="146" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- add provider -->
+  <rect x="40" y="256" width="800" height="60" rx="10" fill="#f3eefe" stroke="#8250df" stroke-width="2"/>
+  <text x="62" y="280" font-size="13" font-weight="bold" fill="#6639ba">加一家新 provider 的真实动作：</text>
+  <text x="62" y="302" font-size="12" font-family="Consolas, monospace" fill="#24292f">{ "templateId": "my-provider", "api": { "type": "openai-chat-completions", "base_url": "..." }, "models": [...] }  ← 没有代码改动</text>
+
+  <!-- guard -->
+  <rect x="40" y="332" width="800" height="42" rx="10" fill="#fff3f3" stroke="#c9524a" stroke-width="1.5"/>
+  <text x="440" y="358" text-anchor="middle" font-size="12" fill="#a83a32">NOTICE.md:39：命中官方 Anthropic 兼容端点会自动改写到 ZCode 网关 —— provider 层也有产品语义，读配置要带这层意识</text>
+</svg>

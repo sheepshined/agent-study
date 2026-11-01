@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="870" height="430" viewBox="0 0 870 430" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="870" height="430" fill="#fafbfc"/>
+  <text x="435" y="32" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">模型特化：工具面互斥开关 + 提示词前缀路由（行序即优先级）</text>
+
+  <!-- tool surface -->
+  <rect x="40" y="62" width="380" height="170" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="230" y="88" text-anchor="middle" font-size="15" font-weight="bold" fill="#2b5985">① 工具面互斥开关（registry.ts:297-300）</text>
+  <rect x="60" y="102" width="340" height="54" rx="6" fill="#ffffff" stroke="#8fb3d9"/>
+  <text x="230" y="123" text-anchor="middle" font-size="11.5" fill="#24292f">usePatch = includes("gpt-") ∧ !includes("oss")</text>
+  <text x="230" y="143" text-anchor="middle" font-size="11.5" fill="#24292f">∧ !includes("gpt-4")</text>
+  <rect x="60" y="164" width="160" height="52" rx="6" fill="#f0f7ee" stroke="#3d9a50"/>
+  <text x="140" y="185" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#2c7a3f">true → apply_patch</text>
+  <text x="140" y="204" text-anchor="middle" font-size="10.5" fill="#6a737d">edit/write 消失</text>
+  <rect x="240" y="164" width="160" height="52" rx="6" fill="#fdf3e7" stroke="#d9a03c"/>
+  <text x="320" y="185" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#8a5a00">false → edit + write</text>
+  <text x="320" y="204" text-anchor="middle" font-size="10.5" fill="#6a737d">apply_patch 不出现</text>
+  <text x="230" y="230" text-anchor="middle" font-size="10.5" fill="#b35900">三行是一个互斥开关，不能只改其中一行</text>
+
+  <!-- prompt family -->
+  <rect x="450" y="62" width="380" height="170" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="640" y="88" text-anchor="middle" font-size="15" font-weight="bold" fill="#2c7a3f">② 提示词前缀路由（system.ts:43-66）</text>
+  <rect x="470" y="102" width="160" height="28" rx="5" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="550" y="121" text-anchor="middle" font-size="11" fill="#24292f">muse → meta.txt（槽位）</text>
+  <rect x="470" y="134" width="160" height="28" rx="5" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="550" y="153" text-anchor="middle" font-size="11" fill="#24292f">gpt-4|o1|o3 → beast.txt</text>
+  <rect x="470" y="166" width="160" height="28" rx="5" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="550" y="185" text-anchor="middle" font-size="11" fill="#24292f">gpt → astra/codex/gpt</text>
+  <rect x="640" y="102" width="170" height="28" rx="5" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="725" y="121" text-anchor="middle" font-size="11" fill="#24292f">gemini- / claude / trinity</text>
+  <rect x="640" y="134" width="170" height="28" rx="5" fill="#fdf3e7" stroke="#d9a03c"/>
+  <text x="725" y="153" text-anchor="middle" font-size="11" fill="#24292f">kimi：id 或 providerID</text>
+  <rect x="640" y="166" width="170" height="28" rx="5" fill="#f6f8fa" stroke="#c9d4de"/>
+  <text x="725" y="185" text-anchor="middle" font-size="11" fill="#24292f">兜底 → default.txt</text>
+  <text x="640" y="222" text-anchor="middle" font-size="10.5" fill="#b35900">从上到下第一个命中生效：改顺序 = 静默换提示词</text>
+
+  <!-- flow -->
+  <path d="M 230 232 V 268" stroke="#5a6b7b" stroke-width="1.8" marker-end="url(#arr)"/>
+  <path d="M 640 232 V 268" stroke="#5a6b7b" stroke-width="1.8" marker-end="url(#arr)"/>
+  <rect x="40" y="270" width="790" height="80" rx="10" fill="#f6f8fa" stroke="#c9d4de" stroke-width="2"/>
+  <text x="435" y="296" text-anchor="middle" font-size="14" font-weight="bold" fill="#24292f">三个分叉落点，一个外置目录</text>
+  <text x="435" y="318" text-anchor="middle" font-size="11.5" fill="#24292f">工具面（本轮可见 schema）· 提示词家族（system 拼装第一段）· schema 改写（ProviderTransform）</text>
+  <text x="435" y="338" text-anchor="middle" font-size="11.5" fill="#6a737d">模型目录来自 models.opencode.ai（models-dev.ts:160）：加 provider 去那边提 PR，本仓零代码</text>
+
+  <text x="435" y="382" text-anchor="middle" font-size="12" fill="#6a737d">oss（本地开源权重）与 gpt-4（老一代）显式排除在 patch 格式之外——差异写在代码里，不写进配置</text>
+  <text x="435" y="406" text-anchor="middle" font-size="12" fill="#8a3030">未知模型不报错：掉到 default.txt + 全量通用工具面，保证"任何模型都能跑"</text>
+</svg>

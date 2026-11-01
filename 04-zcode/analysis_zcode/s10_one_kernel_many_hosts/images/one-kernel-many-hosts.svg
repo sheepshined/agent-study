@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="400" viewBox="0 0 880 400" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="880" height="400" fill="#fafbfc"/>
+  <text x="440" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">多形态装配：同一内核，五种壳（ZCode Protocol V4）</text>
+
+  <!-- hosts -->
+  <g font-size="12" fill="#24292f">
+    <rect x="40" y="56" width="150" height="54" rx="8" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+    <text x="115" y="78" text-anchor="middle" font-weight="bold" fill="#2b5985">TUI（终端）</text>
+    <text x="115" y="98" text-anchor="middle" font-size="10.5" fill="#6a737d">opentui + react19</text>
+    <rect x="210" y="56" width="150" height="54" rx="8" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+    <text x="285" y="78" text-anchor="middle" font-weight="bold" fill="#2c7a3f">Desktop（Electron）</text>
+    <text x="285" y="98" text-anchor="middle" font-size="10.5" fill="#6a737d">每窗口一个 Local Host</text>
+    <rect x="380" y="56" width="150" height="54" rx="8" fill="#fdf6ec" stroke="#c98a2b" stroke-width="2"/>
+    <text x="455" y="78" text-anchor="middle" font-weight="bold" fill="#8a5a12">Web（Hono+React）</text>
+    <text x="455" y="98" text-anchor="middle" font-size="10.5" fill="#6a737d">回环限制 + 鉴权</text>
+    <rect x="550" y="56" width="150" height="54" rx="8" fill="#f3eefe" stroke="#8250df" stroke-width="2"/>
+    <text x="625" y="78" text-anchor="middle" font-weight="bold" fill="#6639ba">SDK（client）</text>
+    <text x="625" y="98" text-anchor="middle" font-size="10.5" fill="#6a737d">Agent 客户端</text>
+    <rect x="720" y="56" width="120" height="54" rx="8" fill="#fff3f3" stroke="#c9524a" stroke-width="2"/>
+    <text x="780" y="78" text-anchor="middle" font-weight="bold" fill="#a83a32">手机远控</text>
+    <text x="780" y="98" text-anchor="middle" font-size="10.5" fill="#6a737d">复用桌面 attachment</text>
+  </g>
+
+  <!-- protocol -->
+  <rect x="40" y="140" width="800" height="88" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="62" y="164" font-size="13.5" font-weight="bold" fill="#2b5985">ZCode Protocol V4（packages/shared/src/zcode-protocol/index.ts，3717 行 —— 协议唯一改动点，根 AGENTS.md:59）</text>
+  <text x="62" y="188" font-size="11.5" font-family="Consolas, monospace" fill="#24292f">app-server / agent-server --stdio：stdout = 严格帧通道；console 全部改道 stderr（main.ts）—— 一行日志污染一帧 = 解析崩溃</text>
+  <text x="62" y="212" font-size="11.5" font-family="Consolas, monospace" fill="#24292f">CommandInbox（command-inbox.ts:107）：busy/running 输入串行 admission，admissionSeq 单调递增，per-session gate 持有到 settle</text>
+
+  <!-- kernel -->
+  <rect x="240" y="248" width="400" height="94" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="440" y="274" text-anchor="middle" font-size="14" font-weight="bold" fill="#2c7a3f">同一个 agent 内核（apps/zcode-cli，23 万行）</text>
+  <text x="440" y="298" text-anchor="middle" font-size="11.5" fill="#24292f">三层循环(s01) · SQLite 事件溯源(s02) · 工具双轨(s03) · 权限格子(s04)</text>
+  <text x="440" y="320" text-anchor="middle" font-size="11.5" fill="#24292f">上下文预算(s05) · hooks/信任(s06) · plugin-host(s07) · DWF(s08) · provider 目录(s09)</text>
+
+  <line x1="115" y1="110" x2="300" y2="240" stroke="#5a6b7b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="285" y1="110" x2="380" y2="242" stroke="#5a6b7b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="455" y1="110" x2="450" y2="242" stroke="#5a6b7b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="625" y1="110" x2="530" y2="242" stroke="#5a6b7b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="780" y1="110" x2="620" y2="240" stroke="#5a6b7b" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <text x="440" y="368" text-anchor="middle" font-size="12" fill="#6a737d">手机远控不另起 Agent/Local Host/远程会话（根 AGENTS.md:61-63）；headless 默认 yolo（run.ts:42）——无人应答的审批=失败</text>
+</svg>

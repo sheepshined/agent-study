@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="470" viewBox="0 0 880 470" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="880" height="470" fill="#fafbfc"/>
+  <text x="440" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">s08 skills 七档加载优先级（同名：高优先级源赢）</text>
+
+  <!-- tiers -->
+  <rect x="28" y="60" width="420" height="360" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="238" y="88" text-anchor="middle" font-size="14" font-weight="bold" fill="#2b5985">装载优先级（docs/tools/skills.md 表）</text>
+  <g font-size="12" font-family="Consolas, monospace" fill="#24292f">
+    <rect x="44" y="102" width="388" height="30" fill="#dbeafe"/><text x="54" y="122">1 &lt;workspace&gt;/skills　　　（最高）</text>
+    <rect x="44" y="136" width="388" height="30" fill="#e3ecfb"/><text x="54" y="156">2 &lt;workspace&gt;/.agents/skills</text>
+    <rect x="44" y="170" width="388" height="30" fill="#eaf1fc"/><text x="54" y="190">3 ~/.agents/skills</text>
+    <rect x="44" y="204" width="388" height="30" fill="#f0f5fd"/><text x="54" y="224">4 &lt;state-dir&gt;/skills</text>
+    <rect x="44" y="238" width="388" height="30" fill="#f5f8fe"/><text x="54" y="258">5 workshop skills（草稿转正）</text>
+    <rect x="44" y="272" width="388" height="30" fill="#fdf6ec"/><text x="54" y="292">6 bundled + custodian（并列）</text>
+    <rect x="44" y="306" width="388" height="30" fill="#f6f6f6"/><text x="54" y="326">7 skills.load.extraDirs + 插件 skills</text>
+  </g>
+  <text x="238" y="360" text-anchor="middle" font-size="11.5" fill="#8a5a12">同名技能只保留一个：谁等级高谁说</text>
+  <text x="238" y="380" text-anchor="middle" font-size="11.5" fill="#8a5a12">碰撞要告警：SkillCollision {winner, loser}</text>
+  <text x="238" y="404" text-anchor="middle" font-size="11.5" fill="#2b5985">bundled 51 个 + custodian 4 个（Custodian agent 专属）</text>
+
+  <!-- flow -->
+  <rect x="500" y="60" width="352" height="180" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="676" y="88" text-anchor="middle" font-size="14" font-weight="bold" fill="#2c7a3f">workshop 自学习闭环</text>
+  <g font-size="12" fill="#24292f">
+    <text x="516" y="118">agent 起草（skill_workshop 工具）</text>
+    <text x="516" y="144">→ 人审批（未批准 = 只是草稿）</text>
+    <text x="516" y="170">→ 转正落到第 5 档 workshop 目录</text>
+    <text x="516" y="196">→ 下次快照刷新后生效（s03 的</text>
+    <text x="530" y="216">skillsSnapshotVersion 会在重启时 bump）</text>
+  </g>
+
+  <!-- custodian -->
+  <rect x="500" y="262" width="352" height="158" rx="10" fill="#f3eefe" stroke="#8250df" stroke-width="2"/>
+  <text x="676" y="290" text-anchor="middle" font-size="14" font-weight="bold" fill="#6639ba">custodian skills：按角色加载</text>
+  <g font-size="12" fill="#24292f">
+    <text x="516" y="320">只被系统运维 agent（Custodian）加载</text>
+    <text x="516" y="346">固定五段式：Gather→Mutate→Repair</text>
+    <text x="532" y="366">→Prove→Report</text>
+    <text x="516" y="396" fill="#b42318">普通 agent 请求 = 拒绝（按角色不是按名）</text>
+  </g>
+
+  <text x="440" y="450" text-anchor="middle" font-size="12" fill="#6a737d">对应真实源码：src/skills/loading/skill-precedence.ts:7/:56 ｜ src/skills/discovery/skill-index.ts ｜ src/skills/loading/bundled-dir.ts ｜ docs/tools/skills.md:33-48 ｜ docs/tools/custodian-skills.md:11-27</text>
+</svg>

@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="540" viewBox="0 0 880 540" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#3d9a50"/>
+    </marker>
+    <marker id="arrP" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#8250df"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="880" height="540" fill="#fafbfc"/>
+  <text x="440" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">收官装配：内核一份 · 闸口一处 · 事件一条流 —— 前端只是投影器与 RPC 客户端</text>
+
+  <!-- 内核 -->
+  <rect x="24" y="52" width="300" height="252" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="174" y="74" text-anchor="middle" font-size="14" font-weight="bold" fill="#2c7a3f">内核（codex-core）</text>
+  <rect x="40" y="86" width="268" height="34" rx="6" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="174" y="107" text-anchor="middle" font-size="10.5" fill="#24292f">run_turn：预压缩 → 按需装配 → step 循环（s01）</text>
+  <rect x="40" y="126" width="268" height="34" rx="6" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="174" y="147" text-anchor="middle" font-size="10.5" fill="#24292f">orchestrator：审批 → 选沙箱 → 执行 → 升级（s03/05）</text>
+  <rect x="40" y="166" width="268" height="34" rx="6" fill="#fff8e6" stroke="#d8a72c"/>
+  <text x="174" y="187" text-anchor="middle" font-size="10.5" fill="#24292f">AskForApproval × SandboxPolicy 双轴（s04）</text>
+  <rect x="40" y="206" width="268" height="52" rx="6" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="174" y="226" text-anchor="middle" font-size="10.5" fill="#24292f">工具面：shell · apply_patch(s07) · MCP(s06)</text>
+  <text x="174" y="244" text-anchor="middle" font-size="10.5" fill="#24292f">子代理 thread(s08) —— 同表同闸，无旁路</text>
+  <text x="174" y="278" text-anchor="middle" font-size="10.5" fill="#2c7a3f">唯一出口 emit()：</text>
+  <text x="174" y="294" text-anchor="middle" font-size="10" fill="#6a737d">录制（s02）与事件流同源</text>
+
+  <!-- rollout + 事件流 -->
+  <rect x="340" y="52" width="180" height="252" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="430" y="74" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#2b5985">一条流，两处落点</text>
+  <rect x="354" y="88" width="152" height="86" rx="6" fill="#ffffff" stroke="#c3d4e6"/>
+  <text x="430" y="106" text-anchor="middle" font-size="10.5" fill="#24292f">rollout JSONL</text>
+  <text x="362" y="124" font-size="9.5" fill="#57606a">{turn/started …}</text>
+  <text x="362" y="140" font-size="9.5" fill="#57606a">{item/completed …}</text>
+  <text x="362" y="158" font-size="9.5" fill="#a83a30">只增不减 → 重放</text>
+  <rect x="354" y="184" width="152" height="72" rx="6" fill="#ffffff" stroke="#c3d4e6"/>
+  <text x="430" y="202" text-anchor="middle" font-size="10.5" fill="#24292f">ServerNotification</text>
+  <text x="430" y="218" text-anchor="middle" font-size="10" fill="#2b5985">s09 的方法表</text>
+  <text x="430" y="236" text-anchor="middle" font-size="10" fill="#6a737d">按连接订阅集分发</text>
+  <text x="430" y="284" text-anchor="middle" font-size="10" fill="#2b5985">实时 == 重放（确定性）</text>
+
+  <!-- 投影器 -->
+  <rect x="536" y="52" width="320" height="252" rx="10" fill="#f3eefb" stroke="#8250df" stroke-width="2"/>
+  <text x="696" y="74" text-anchor="middle" font-size="14" font-weight="bold" fill="#6639ba">投影器（换前端 = 换投影器）</text>
+  <rect x="552" y="88" width="288" height="34" rx="6" fill="#ffffff" stroke="#c9b1ec"/>
+  <text x="562" y="109" font-size="10.5" fill="#24292f">human：排版上色（exec/src/event_processor_with_human_output.rs:228-342）</text>
+  <rect x="552" y="128" width="288" height="34" rx="6" fill="#ffffff" stroke="#c9b1ec"/>
+  <text x="562" y="149" font-size="10.5" fill="#24292f">jsonl：一行一事件（…_with_jsonl_output.rs）—— 脚本消费</text>
+  <rect x="552" y="168" width="288" height="34" rx="6" fill="#ffffff" stroke="#c9b1ec"/>
+  <text x="562" y="189" font-size="10.5" fill="#24292f">tui：折叠成框（tui/ + ratatui，快照测试锁住渲染）</text>
+  <rect x="552" y="208" width="288" height="34" rx="6" fill="#ffffff" stroke="#c9b1ec"/>
+  <text x="562" y="229" font-size="10.5" fill="#24292f">sdk：类型化结果对象（不改内核，只做映射）</text>
+  <rect x="552" y="250" width="288" height="40" rx="6" fill="#fdebe8" stroke="#d4726a"/>
+  <text x="562" y="266" font-size="10" fill="#a83a30">坏前端想绕过 orchestrator 直接执行 →</text>
+  <text x="562" y="282" font-size="10" fill="#a83a30">没有那个 API：未知工具名连注册都进不去（s03）</text>
+
+  <!-- 身份与传输 -->
+  <rect x="24" y="322" width="832" height="86" rx="10" fill="#ffffff" stroke="#5a6b7b" stroke-width="2"/>
+  <text x="440" y="342" text-anchor="middle" font-size="13" font-weight="bold" fill="#24292f">一个二进制，多重身份（cli/src/main.rs:129 MultitoolCli，:146-:241 Subcommand，arg0/ 切身份）</text>
+  <text x="44" y="364" font-size="10.5" fill="#2b5985">codex（TUI）· exec · review · app-server · agents · sandbox · resume · fork · apply · queue · mcp · plugin · doctor · debug · stdio-to-uds · exec-server · features</text>
+  <text x="44" y="384" font-size="10.5" fill="#6639ba">客户端门面只有一个：AppServerClient::{InProcess（同进程，仍走请求/通知/事件模型）｜Remote（UnixSocket → UDS+WebSocket ／ WebSocket → 跨机）}</text>
+  <text x="44" y="400" font-size="10" fill="#8b949e">lib.rs:295-300 原文：facade 故意保留服务器的 request/notification/event 模型，而不是暴露 core runtime 句柄</text>
+
+  <!-- arrows -->
+  <line x1="324" y1="178" x2="352" y2="178" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="520" y1="120" x2="548" y2="120" stroke="#8250df" stroke-width="2" marker-end="url(#arrP)"/>
+  <line x1="520" y1="212" x2="548" y2="212" stroke="#8250df" stroke-width="2" marker-end="url(#arrP)"/>
+  <path d="M174 304 L174 320" stroke="#3d9a50" stroke-width="2" marker-end="url(#arrG)"/>
+
+  <!-- 横向对照 -->
+  <rect x="24" y="424" width="832" height="66" rx="8" fill="#eef4fb" stroke="#4a78b5"/>
+  <text x="440" y="444" text-anchor="middle" font-size="12" font-weight="bold" fill="#2b5985">同一个 agent loop，两份工业化答案</text>
+  <text x="440" y="463" text-anchor="middle" font-size="10.5" fill="#24292f">Codex：内核级沙箱 + 双轴审批 + app-server 单一内核 + 角色 toml —— 把「工程化与安全」做到极致</text>
+  <text x="440" y="481" text-anchor="middle" font-size="10.5" fill="#24292f">DeepSeek Harness：一切皆插件 + profile 装配多形态 —— 把「可组装」做到极致（对照 s10_profile_assembly）</text>
+
+  <text x="440" y="516" text-anchor="middle" font-size="11" fill="#6a737d">mini 实现：s10_frontends/code.py（装配 + 四投影 + 重放相等 + 无旁路证明）｜ 学习路线见 README「先读什么」</text>
+</svg>

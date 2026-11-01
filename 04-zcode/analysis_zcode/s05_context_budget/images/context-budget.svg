@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="400" viewBox="0 0 880 400" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="880" height="400" fill="#fafbfc"/>
+  <text x="440" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">三层上下文预算 + rapid-refill 熔断</text>
+
+  <!-- budget bar -->
+  <rect x="40" y="56" width="800" height="46" rx="8" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <rect x="42" y="58" width="520" height="42" fill="#d6e4f5"/>
+  <rect x="562" y="58" width="140" height="42" fill="#f6d9a0"/>
+  <rect x="702" y="58" width="136" height="42" fill="#f3c1bd"/>
+  <text x="300" y="83" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#2b5985">可用上下文（contextWindow 200k）</text>
+  <text x="632" y="83" text-anchor="middle" font-size="11" fill="#8a5a12">输出预留 21k</text>
+  <text x="770" y="83" text-anchor="middle" font-size="11" fill="#a83a32">buffer 13k</text>
+  <text x="440" y="122" text-anchor="middle" font-size="11" fill="#6a737d">压缩线 = 窗口 − 输出预留 − buffer（policy.ts:22/:26，决策带 reason :90-160）</text>
+
+  <!-- three layers -->
+  <rect x="40" y="146" width="252" height="150" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="166" y="172" text-anchor="middle" font-size="14" font-weight="bold" fill="#2c7a3f">第 1 层 microcompact</text>
+  <text x="166" y="196" text-anchor="middle" font-size="11.5" fill="#24292f">只换旧 tool result → 占位文本</text>
+  <text x="166" y="218" text-anchor="middle" font-size="11.5" fill="#24292f">消息条数 / 配对恒定不变</text>
+  <text x="166" y="240" text-anchor="middle" font-size="11.5" fill="#24292f">最近 5 个结果永不碰</text>
+  <text x="166" y="262" text-anchor="middle" font-size="11.5" fill="#24292f">收益 &lt; minTokenSavings 不压</text>
+  <text x="166" y="286" text-anchor="middle" font-size="10.5" fill="#2c7a3f">microcompact.ts（纯函数 :83）</text>
+
+  <rect x="314" y="146" width="252" height="150" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="440" y="172" text-anchor="middle" font-size="14" font-weight="bold" fill="#2b5985">第 2 层 auto compact</text>
+  <text x="440" y="196" text-anchor="middle" font-size="11.5" fill="#24292f">provider usage 超阈值 → 摘要重写</text>
+  <text x="440" y="218" text-anchor="middle" font-size="11.5" fill="#24292f">九段结构摘要（prompt.ts:33-44）</text>
+  <text x="440" y="240" text-anchor="middle" font-size="11.5" fill="#24292f">安全指令 verbatim 保留（:49）</text>
+  <text x="440" y="262" text-anchor="middle" font-size="11.5" fill="#24292f">至少保留最近 1 组对话</text>
+  <text x="440" y="286" text-anchor="middle" font-size="10.5" fill="#2b5985">policy.ts / compact-active.ts / compact-selection.ts</text>
+
+  <rect x="588" y="146" width="252" height="150" rx="10" fill="#fdf6ec" stroke="#c98a2b" stroke-width="2"/>
+  <text x="714" y="172" text-anchor="middle" font-size="14" font-weight="bold" fill="#8a5a12">第 3 层 reactive</text>
+  <text x="714" y="196" text-anchor="middle" font-size="11.5" fill="#24292f">超窗错误 / finish reason 之后</text>
+  <text x="714" y="218" text-anchor="middle" font-size="11.5" fill="#24292f">补救压缩 → continue</text>
+  <text x="714" y="240" text-anchor="middle" font-size="11.5" fill="#24292f">rapid-refill 计数：压完立刻又满</text>
+  <text x="714" y="262" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#a83a32">→ 抛 rapid_refill_blocked</text>
+  <text x="714" y="286" text-anchor="middle" font-size="10.5" fill="#8a5a12">turn-model-step.ts:742-803 ｜ turn-loop.ts:103-121</text>
+
+  <line x1="292" y1="221" x2="308" y2="221" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="566" y1="221" x2="582" y2="221" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- invariant -->
+  <rect x="40" y="316" width="800" height="46" rx="10" fill="#f3eefe" stroke="#8250df" stroke-width="2"/>
+  <text x="440" y="336" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#6639ba">与 s02 的关系：日志永远完整 —— 三层压缩的都是"下一次请求的投影"，事件表一个字段都不删</text>
+  <text x="440" y="354" text-anchor="middle" font-size="11" fill="#6639ba">熔断 = 治理段里少见的主动终止路径：再压只是烧钱死循环，决定权交还用户</text>
+
+  <text x="440" y="390" text-anchor="middle" font-size="13" fill="#6a737d">对应真实源码：core/src/compact/{microcompact,policy,prompt,manual}.ts｜runtime/methods/{turn-loop.ts,turn-model-step.ts,compact-active.ts}</text>
+</svg>

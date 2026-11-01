@@ -1,0 +1,42 @@
+# Credentials and local state
+.env
+.env.*
+!.env.example
+.zcode/
+*.log
+
+# Dependencies and caches
+node_modules/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.next/
+dist/
+build/
+
+# Third-party source clones: keep original study notes and self-built minimal implementations only
+01-claude-code/anon-kode/
+01-claude-code/claude-code-official/
+01-claude-code/claude-code-reverse/
+01-claude-code/analysis_claude_code/
+02-codex/codex/
+03-deepseek-harness/deepseek-harness/
+04-zcode/ZCode/
+05-openclaw/openclaw/
+06-opencode/opencode/
+07-langchain/langchain/
+08-langgraph/langgraph/
+project-study/browser-use/
+project-study/crewai/
+project-study/camel/
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

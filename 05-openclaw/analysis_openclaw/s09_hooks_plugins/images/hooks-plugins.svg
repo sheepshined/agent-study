@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="500" viewBox="0 0 880 500" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="880" height="500" fill="#fafbfc"/>
+  <text x="440" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">s09 钩子与插件：17 个钩子位的时序与终态裁决</text>
+
+  <!-- timeline -->
+  <rect x="28" y="60" width="520" height="360" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="288" y="88" text-anchor="middle" font-size="14" font-weight="bold" fill="#2b5985">一次 run 的钩子时序（agent-loop.md:85-95）</text>
+  <g font-size="11.5" font-family="Consolas, monospace" fill="#24292f">
+    <text x="44" y="116" fill="#8a5a12">gateway_start …（网关生命周期）</text>
+    <text x="44" y="140">message_received → session_start</text>
+    <text x="44" y="164">before_model_resolve（确定性改判模型）</text>
+    <text x="44" y="188">before_prompt_build（prependContext/toolsAllow）</text>
+    <text x="44" y="212">before_agent_reply（可代答/静默）</text>
+    <text x="44" y="236">before_tool_call ★{block:true} 终态</text>
+    <text x="44" y="260">tool_result_persist（落盘前同步改写）</text>
+    <text x="44" y="284">after_tool_call → before/after_compaction（只观察）</text>
+    <text x="44" y="308">agent_end → session_end</text>
+    <text x="44" y="332">message_sending ★{cancel:true} 终态 → message_sent</text>
+    <text x="44" y="360" fill="#8a5a12">gateway_stop …</text>
+  </g>
+  <text x="288" y="396" text-anchor="middle" font-size="11.5" fill="#b42318">终态裁决不可被低优先级处理器推翻（:99/:101）</text>
+  <text x="288" y="414" text-anchor="middle" font-size="11.5" fill="#8a5a12">{block:false}/{cancel:false} 是 no-op，不清除先前的终态</text>
+
+  <!-- registration -->
+  <rect x="588" y="60" width="264" height="170" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="720" y="88" text-anchor="middle" font-size="14" font-weight="bold" fill="#2c7a3f">插件注册面</text>
+  <g font-size="11.5" fill="#24292f">
+    <text x="604" y="116">api.registerTool（登记式捕获）</text>
+    <text x="604" y="142">manifest: openclaw.plugin.json</text>
+    <text x="604" y="168">插件声明 channels/tools/hooks</text>
+    <text x="604" y="194">core 保有共享工具（message）</text>
+    <text x="604" y="216">接口越小越稳定（bundle 优先）</text>
+  </g>
+
+  <!-- three systems -->
+  <rect x="588" y="250" width="264" height="170" rx="10" fill="#fdf6ec" stroke="#c98a2b" stroke-width="2"/>
+  <text x="720" y="278" text-anchor="middle" font-size="14" font-weight="bold" fill="#8a5a12">三套"钩子"别混为一谈</text>
+  <g font-size="11.5" fill="#24292f">
+    <text x="604" y="306">① 插件钩子矩阵（进程内，17 位）</text>
+    <text x="604" y="332">② 内部钩子（command:new/reset/stop、</text>
+    <text x="618" y="352">agent:bootstrap —— 文件驱动）</text>
+    <text x="604" y="378">③ HTTP webhooks（src/gateway/server/</text>
+    <text x="618" y="398">hooks.ts —— 外部系统入站）</text>
+  </g>
+  <line x1="548" y1="240" x2="582" y2="200" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <text x="440" y="472" text-anchor="middle" font-size="12" fill="#6a737d">对应真实源码：docs/concepts/agent-loop.md:85-101 ｜ src/plugins/captured-registration.ts:341/:377 ｜ src/gateway/server/hooks.ts:235 ｜ docs/automation/hooks/</text>
+</svg>

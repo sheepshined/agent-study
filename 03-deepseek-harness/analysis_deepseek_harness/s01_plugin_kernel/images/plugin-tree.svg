@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="420" viewBox="0 0 860 420" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="860" height="420" fill="#fafbfc"/>
+  <text x="430" y="34" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">mini-Cordis：插件树 = 事件总线 + 服务容器 + 可逆副作用</text>
+
+  <!-- root context -->
+  <rect x="60" y="70" width="360" height="230" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="240" y="98" text-anchor="middle" font-size="16" font-weight="bold" fill="#2b5985">root Context（内核作用域）</text>
+  <rect x="85" y="118" width="150" height="54" rx="6" fill="#ffffff" stroke="#8fb3d9"/>
+  <text x="160" y="140" text-anchor="middle" font-size="13" fill="#24292f">插件：tools</text>
+  <text x="160" y="158" text-anchor="middle" font-size="11" fill="#6a737d">provide('tools')</text>
+  <rect x="250" y="118" width="150" height="54" rx="6" fill="#ffffff" stroke="#8fb3d9"/>
+  <text x="325" y="140" text-anchor="middle" font-size="13" fill="#24292f">插件：audit</text>
+  <text x="325" y="158" text-anchor="middle" font-size="11" fill="#6a737d">on('tools/changed')</text>
+  <rect x="85" y="196" width="315" height="80" rx="6" fill="#f6f8fa" stroke="#c9d4de" stroke-dasharray="4 3"/>
+  <text x="242" y="222" text-anchor="middle" font-size="12.5" fill="#24292f">teardown 栈：[tools清理, audit退订]</text>
+  <text x="242" y="244" text-anchor="middle" font-size="12.5" fill="#b35900">dispose() → 后加载的先卸载（逆序）</text>
+  <text x="242" y="263" text-anchor="middle" font-size="12.5" fill="#b35900">副作用必须可逆 = 热插拔的前提</text>
+
+  <!-- child context -->
+  <rect x="520" y="70" width="300" height="230" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="670" y="98" text-anchor="middle" font-size="16" font-weight="bold" fill="#2c7a3f">child Context（一次会话）</text>
+  <rect x="545" y="122" width="250" height="54" rx="6" fill="#ffffff" stroke="#93c9a0"/>
+  <text x="670" y="144" text-anchor="middle" font-size="13" fill="#24292f">插件：会话私有工具</text>
+  <text x="670" y="162" text-anchor="middle" font-size="11" fill="#6a737d">register('session_private')</text>
+  <rect x="545" y="196" width="250" height="80" rx="6" fill="#f6f8fa" stroke="#c9d4de" stroke-dasharray="4 3"/>
+  <text x="670" y="224" text-anchor="middle" font-size="12.5" fill="#24292f">get('tools') 沿树向上回落</text>
+  <text x="670" y="246" text-anchor="middle" font-size="12.5" fill="#24292f">→ 能用 root 的工具注册表</text>
+  <text x="670" y="266" text-anchor="middle" font-size="12.5" fill="#6a737d">作用域分层 = ctx 树分层</text>
+
+  <!-- fork arrow -->
+  <line x1="420" y1="160" x2="515" y2="160" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="467" y="150" text-anchor="middle" font-size="13" fill="#24292f">fork()</text>
+
+  <!-- event bubbling -->
+  <path d="M 670 300 C 670 345 240 320 240 305" fill="none" stroke="#8250df" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arr)"/>
+  <text x="455" y="352" text-anchor="middle" font-size="13" fill="#8250df">事件冒泡：child 发出 tools/changed，root 的 audit 也能听到</text>
+
+  <!-- dispose -->
+  <path d="M 420 200 C 470 230 520 230 555 215" fill="none" stroke="#cf222e" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="487" y="243" text-anchor="middle" font-size="13" fill="#cf222e">dispose 级联</text>
+</svg>

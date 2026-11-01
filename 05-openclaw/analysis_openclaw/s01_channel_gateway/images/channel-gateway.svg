@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="430" viewBox="0 0 880 430" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="880" height="430" fill="#fafbfc"/>
+  <text x="440" y="32" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">s01 渠道网关：适配器归一化 → 常驻网关生命周期</text>
+
+  <!-- channels -->
+  <rect x="30" y="70" width="180" height="270" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="120" y="98" text-anchor="middle" font-size="15" font-weight="bold" fill="#2b5985">27 类通讯渠道</text>
+  <g font-size="12" fill="#24292f">
+    <text x="50" y="130">Telegram（grammY update）</text>
+    <text x="50" y="158">WhatsApp（Baileys 消息）</text>
+    <text x="50" y="186">Discord（message create）</text>
+    <text x="50" y="214">Slack · Signal · iMessage</text>
+    <text x="50" y="242">Matrix · Teams · 飞书 · IRC</text>
+    <text x="50" y="270">LINE · Nostr · SMS …</text>
+  </g>
+  <text x="120" y="316" text-anchor="middle" font-size="11.5" fill="#b35900">每家报文结构完全不同</text>
+
+  <!-- adapter -->
+  <rect x="270" y="120" width="180" height="170" rx="10" fill="#fdf6ec" stroke="#c98a2b" stroke-width="2"/>
+  <text x="360" y="150" text-anchor="middle" font-size="14" font-weight="bold" fill="#8a5a12">channel 适配器</text>
+  <text x="360" y="178" text-anchor="middle" font-size="12" fill="#24292f">normalize(raw) →</text>
+  <text x="360" y="200" text-anchor="middle" font-size="12" font-family="Consolas, monospace" fill="#24292f">InboundMessage{<!-- --></text>
+  <text x="360" y="222" text-anchor="middle" font-size="12" fill="#24292f">channel · chatType · sender</text>
+  <text x="360" y="244" text-anchor="middle" font-size="12" fill="#24292f">chatId · text · messageId</text>
+  <text x="360" y="272" text-anchor="middle" font-size="11.5" fill="#8a5a12">插件只管翻译，契约归 core</text>
+  <line x1="210" y1="205" x2="264" y2="205" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- gateway -->
+  <rect x="510" y="66" width="340" height="278" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="680" y="96" text-anchor="middle" font-size="15" font-weight="bold" fill="#2c7a3f">Gateway 进程（一台主机一个）</text>
+  <g font-size="12.5" fill="#24292f">
+    <text x="530" y="128">① boot：装配 WS+HTTP :18789</text>
+    <text x="530" y="154">② channels：逐个拉起渠道连接</text>
+    <text x="530" y="180">③ admission：入站预检（去抖/门控）</text>
+    <text x="530" y="206">④ dispatch：入站消息 → 一次 run</text>
+    <text x="530" y="232">⑤ reply：按"来源渠道"发回</text>
+    <text x="530" y="258">⑥ drain：停收新消息 → 排空在途</text>
+    <text x="530" y="284">⑦ closed：断渠道 · 释放资源</text>
+  </g>
+  <text x="680" y="326" text-anchor="middle" font-size="11.5" fill="#2c7a3f">模型可以决定"说什么"，不能决定"发给谁"</text>
+  <line x1="450" y1="205" x2="504" y2="205" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- return path -->
+  <path d="M 680 344 C 680 388 360 388 360 300" fill="none" stroke="#b35900" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arr)"/>
+  <text x="500" y="380" text-anchor="middle" font-size="12" fill="#b35900">回复必回来源渠道（确定性回程，与 sessionKey 一起由网关决定）</text>
+
+  <text x="440" y="418" text-anchor="middle" font-size="12.5" fill="#6a737d">对应真实源码：src/gateway/server-start.ts:21 startGatewayServerCore ｜ src/channels/turn/run-channel-turn.ts:159 runChannelTurn ｜ src/auto-reply/dispatch.ts:234 dispatchInboundMessage</text>
+</svg>

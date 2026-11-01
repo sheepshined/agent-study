@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="870" height="440" viewBox="0 0 870 440" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="870" height="440" fill="#fafbfc"/>
+  <text x="435" y="32" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">V2 会话存储：追加日志 + 投影重建 + durable admission 收件箱</text>
+
+  <!-- event log -->
+  <rect x="40" y="62" width="300" height="330" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="190" y="90" text-anchor="middle" font-size="15" font-weight="bold" fill="#2b5985">事件日志（只增不减）</text>
+  <rect x="62" y="106" width="256" height="30" rx="5" fill="#ffffff" stroke="#8fb3d9"/>
+  <text x="190" y="126" text-anchor="middle" font-size="11.5" fill="#24292f">seq=1　session.created</text>
+  <rect x="62" y="142" width="256" height="30" rx="5" fill="#fdf3e7" stroke="#d9a03c"/>
+  <text x="190" y="162" text-anchor="middle" font-size="11.5" fill="#24292f">seq=2　input.admitted（收件箱）</text>
+  <rect x="62" y="178" width="256" height="30" rx="5" fill="#ffffff" stroke="#8fb3d9"/>
+  <text x="190" y="198" text-anchor="middle" font-size="11.5" fill="#24292f">seq=3　message.created</text>
+  <rect x="62" y="214" width="256" height="30" rx="5" fill="#ffffff" stroke="#8fb3d9"/>
+  <text x="190" y="234" text-anchor="middle" font-size="11.5" fill="#24292f">seq=4　part.updated</text>
+  <rect x="62" y="250" width="256" height="30" rx="5" fill="#f0f7ee" stroke="#3d9a50"/>
+  <text x="190" y="270" text-anchor="middle" font-size="11.5" fill="#24292f">seq=5　input.promoted（安全边界）</text>
+  <rect x="62" y="292" width="256" height="80" rx="6" fill="#f6f8fa" stroke="#c9d4de" stroke-dasharray="4 3"/>
+  <text x="190" y="316" text-anchor="middle" font-size="11.5" fill="#24292f">崩溃容忍：残缺尾行丢弃</text>
+  <text x="190" y="336" text-anchor="middle" font-size="11.5" fill="#24292f">前缀事件原样重建投影</text>
+  <text x="190" y="358" text-anchor="middle" font-size="11" fill="#6a737d">修正也是新事件，不改历史</text>
+
+  <!-- projector -->
+  <path d="M 340 200 H 400" stroke="#5a6b7b" stroke-width="1.8" marker-end="url(#arr)"/>
+  <rect x="402" y="152" width="120" height="96" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="462" y="186" text-anchor="middle" font-size="14" font-weight="bold" fill="#2c7a3f">投影器</text>
+  <text x="462" y="208" text-anchor="middle" font-size="11" fill="#24292f">rebuild(events)</text>
+  <text x="462" y="228" text-anchor="middle" font-size="10.5" fill="#6a737d">重放两遍全等</text>
+
+  <path d="M 522 200 H 580" stroke="#5a6b7b" stroke-width="1.8" marker-end="url(#arr)"/>
+
+  <!-- views -->
+  <rect x="582" y="62" width="248" height="96" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="706" y="88" text-anchor="middle" font-size="14" font-weight="bold" fill="#2b5985">会话视图（session_message）</text>
+  <text x="706" y="112" text-anchor="middle" font-size="11.5" fill="#24292f">(session_id, seq) 唯一索引</text>
+  <text x="706" y="132" text-anchor="middle" font-size="11.5" fill="#24292f">结构化列管查询 + JSON 载荷</text>
+  <rect x="582" y="172" width="248" height="86" rx="10" fill="#fdf3e7" stroke="#d9a03c" stroke-width="2"/>
+  <text x="706" y="198" text-anchor="middle" font-size="14" font-weight="bold" fill="#8a5a00">收件箱（session_input）</text>
+  <text x="706" y="222" text-anchor="middle" font-size="11.5" fill="#24292f">admitted_seq / promoted_seq</text>
+  <text x="706" y="242" text-anchor="middle" font-size="11.5" fill="#24292f">pending 查询走索引，不全扫</text>
+  <rect x="582" y="272" width="248" height="86" rx="10" fill="#f6f8fa" stroke="#c9d4de" stroke-width="2"/>
+  <text x="706" y="298" text-anchor="middle" font-size="14" font-weight="bold" fill="#24292f">派生视图</text>
+  <text x="706" y="322" text-anchor="middle" font-size="11.5" fill="#24292f">压缩视图：跳过 compacted 事件</text>
+  <text x="706" y="342" text-anchor="middle" font-size="11.5" fill="#24292f">fork：引用父日志前缀</text>
+
+  <!-- boundary strip -->
+  <rect x="40" y="396" width="790" height="34" rx="8" fill="#fdf3f3" stroke="#c98a8a"/>
+  <text x="435" y="418" text-anchor="middle" font-size="12" fill="#8a3030">为什么换 SQLite：JSONL 全扫 O(日志总量) vs 索引查询 O(命中数)；外加事务与并发写 —— database.ts:53 定义 opencode.db</text>
+</svg>

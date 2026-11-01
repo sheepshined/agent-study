@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="400" viewBox="0 0 880 400" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5a6b7b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="880" height="400" fill="#fafbfc"/>
+  <text x="440" y="32" text-anchor="middle" font-size="19" font-weight="bold" fill="#24292f">压缩：日志不动，投影动</text>
+
+  <!-- log -->
+  <rect x="45" y="66" width="280" height="270" rx="10" fill="#eef4fb" stroke="#4a78b5" stroke-width="2"/>
+  <text x="185" y="94" text-anchor="middle" font-size="15" font-weight="bold" fill="#2b5985">日志（真源，只增不减）</text>
+  <g font-size="11.5" font-family="Consolas, monospace" fill="#24292f">
+    <text x="65" y="124">#01 user/message</text>
+    <text x="65" y="146">#02 assistant/message</text>
+    <rect x="60" y="156" width="250" height="16" fill="#fff3f3" opacity="0.7"/><text x="65" y="168">#03 tool/result（121 tok 巨型输出）</text>
+    <text x="65" y="190">#04 user/message</text>
+    <text x="65" y="212">#05 assistant/message</text>
+    <rect x="60" y="222" width="250" height="16" fill="#fff3f3" opacity="0.7"/><text x="65" y="234">#06 tool/result（137 tok 巨型输出）</text>
+    <text x="65" y="256">#07 user/message</text>
+    <text x="65" y="278">#08 assistant/message</text>
+    <text x="65" y="300" fill="#8250df">#09-12 compaction/start·prune·summary·end</text>
+  </g>
+  <text x="185" y="326" text-anchor="middle" font-size="11.5" fill="#b35900">压缩事件本身也在日志里 —— 动作可审计</text>
+
+  <!-- spill -->
+  <rect x="395" y="66" width="200" height="120" rx="10" fill="#fdf6ec" stroke="#c98a2b" stroke-width="2"/>
+  <text x="495" y="94" text-anchor="middle" font-size="14" font-weight="bold" fill="#8a5a12">spill（落盘）</text>
+  <text x="495" y="120" text-anchor="middle" font-size="12" fill="#24292f">巨型输出 → tmp/spill-*.txt</text>
+  <text x="495" y="142" text-anchor="middle" font-size="12" fill="#24292f">投影里只留指针 + 元数据</text>
+  <text x="495" y="168" text-anchor="middle" font-size="11.5" fill="#8a5a12">想看全文？从日志原文或文件复原</text>
+
+  <!-- projection -->
+  <rect x="395" y="212" width="200" height="124" rx="10" fill="#eefaf0" stroke="#3d9a50" stroke-width="2"/>
+  <text x="495" y="240" text-anchor="middle" font-size="14" font-weight="bold" fill="#2c7a3f">投影（发给模型的）</text>
+  <text x="495" y="266" text-anchor="middle" font-size="12" fill="#24292f">老轮次 → [摘要] 一条</text>
+  <text x="495" y="288" text-anchor="middle" font-size="12" fill="#24292f">老工具结果 → 剪掉</text>
+  <text x="495" y="310" text-anchor="middle" font-size="12" fill="#24292f">近 2 轮 → 原文保留</text>
+  <text x="495" y="332" text-anchor="middle" font-size="11.5" fill="#2c7a3f">302 tok → 50 tok</text>
+
+  <!-- result -->
+  <rect x="660" y="130" width="190" height="170" rx="10" fill="#f3eefe" stroke="#8250df" stroke-width="2"/>
+  <text x="755" y="158" text-anchor="middle" font-size="14" font-weight="bold" fill="#6639ba">性质不变式</text>
+  <text x="755" y="186" text-anchor="middle" font-size="12" fill="#24292f">· 日志可重放（s03）</text>
+  <text x="755" y="210" text-anchor="middle" font-size="12" fill="#24292f">· 审计完整（原文+落盘）</text>
+  <text x="755" y="234" text-anchor="middle" font-size="12" fill="#24292f">· 预算达标（窗内装载）</text>
+  <text x="755" y="262" text-anchor="middle" font-size="11.5" fill="#6639ba">同一份日志，重投影即回任一历史时刻</text>
+  <line x1="595" y1="180" x2="655" y2="190" stroke="#5a6b7b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <text x="440" y="384" text-anchor="middle" font-size="13" fill="#6a737d">对应真实源码：packages/compaction/（basic · tool-result-pruner）｜packages/spill/｜事件：compaction/start · prune · summary · end</text>
+</svg>
